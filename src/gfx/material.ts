@@ -1,0 +1,43 @@
+import { Registry, RegistryItem } from "../registry";
+import type { Renderer } from "./renderer";
+import { Shader } from "./shader";
+
+export class Material {
+	public static readonly registry = new Registry<Material, [Renderer]>();
+
+	private static readonly register = (vertex: RegistryItem<Shader>, fragment: RegistryItem<Shader>) => {
+		return this.registry.register((renderer) => new Material(renderer, vertex.get(), fragment.get()));
+	}
+
+	public static readonly unlitSprite = this.register(Shader.unlitSpriteVertex, Shader.unlitSpriteFragment);
+	public static readonly shadow = this.register(Shader.shadowVertex, Shader.shadowFragment);
+
+	public readonly attributes: Record<string, number> = {};
+	public readonly uniforms: Record<string, WebGLUniformLocation> = {};
+	
+	public readonly program: WebGLProgram;
+
+	public constructor(renderer: Renderer, vertex: Shader, fragment: Shader) {
+		const gl = renderer.gl;
+		this.program = gl.createProgram();
+		gl.attachShader(this.program, vertex.shader);
+		gl.attachShader(this.program, fragment.shader);
+		gl.linkProgram(this.program);
+		
+		Object.keys(vertex.attributes).forEach(name => {
+			const loc = gl.getAttribLocation(this.program, name);
+			if(loc <= -1)
+				return console.warn(`Could not get attributes location for ${name} at ${vertex.path}!`);
+			this.attributes[name] = loc;
+		});
+
+		const uniforms = [...Object.keys(vertex.uniforms), ...Object.keys(fragment.uniforms)]
+		uniforms.forEach(name => {
+			const loc = gl.getUniformLocation(this.program, name);
+			if(!loc)
+				return console.warn(`Could not get attributes location for ${name} at ${vertex.path} or ${fragment.path}!`);
+			this.uniforms[name] = loc;
+		});
+	}
+	
+}

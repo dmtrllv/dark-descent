@@ -1,0 +1,54 @@
+export class Vec2 {
+	public mul({ x, y }: Vec2) {
+		this.x *= x;
+		this.y *= y;
+		return this;
+	}
+
+	public static readonly sub = (a: Vec2, b: Vec2): Vec2 => {
+		return new Vec2(a.x - b.x, a.y - b.y);
+	}
+
+	private readonly _data = new Float32Array([0, 0]);
+
+	public get farray(): Readonly<Float32Array> { return this._data; }
+	public get array(): [number, number] { return [this.x, this.y]; }
+
+	public get x(): number { return this._data[0]; }
+	public get y(): number { return this._data[1]; }
+
+	public set x(value: number) { this._data[0] = value; }
+	public set y(value: number) { this._data[1] = value; }
+
+	public get length() { return Math.sqrt(this.x ** 2 + this.y ** 2); }
+
+	public constructor(x: number = 0, y: number = 0) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public readonly eq = (other: Vec2) => {
+		return this.x === other.x && this.y === other.y;
+	}
+
+	public add({ x, y }: Vec2): Vec2 {
+		this.x += x;
+		this.y += y;
+		return this;
+	}
+
+
+	public normalize(): Vec2 {
+		const l = this.length;
+		this.x /= l;
+		this.y /= l;
+		return this;
+	}
+
+	public scale(scalar: number): Vec2 {
+		this.x *= scalar;
+		this.y *= scalar;
+		return this;
+	}
+
+}
