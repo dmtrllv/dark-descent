@@ -11,5 +11,5 @@ out vec4 fragColor;
 
 void main() {
     float l = 1.0f - pow(length(vert), intensity);
-    fragColor = vec4(color.rgb * l,1);
+    fragColor = vec4(color.rgb * l, l);
 }

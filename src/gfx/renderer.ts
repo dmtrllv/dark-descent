@@ -27,7 +27,7 @@ export class Renderer {
 
 		const gl = this.gl;
 
-		gl.clearColor(0.25, 0.25, 0.25, 1.0);
+		gl.clearColor(0, 0, 0, 0);
 		gl.clearDepth(10.0);
 		gl.enable(gl.DEPTH_TEST);
 		gl.depthFunc(gl.LEQUAL);
@@ -141,7 +141,7 @@ export class Renderer {
 
 	private readonly mergeLight = (lightMap: WebGLTexture, texture: WebGLTexture) => {
 		const gl = this.gl;
-
+		gl.clearColor(0, 0, 0, 0);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -250,7 +250,7 @@ class RenderTarget {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
 		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.targetTexture, 0);
 
-		gl.clearColor(0, 0, 0, 1);
+		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		gl.viewport(0, 0, this.size.x, this.size.y);

@@ -10,7 +10,7 @@ import { Color } from "../color";
 export class First extends Scene {
 	public async load(): Promise<void> {
 		const c = this.spawn().addComponent(Camera);
-
+		
 		this.spawn(Platform, Sprite.background, new Vec2(0, -3));
 
 		for (let i = -10; i < 10; i++) {
@@ -18,14 +18,11 @@ export class First extends Scene {
 			this.spawn(Platform, Sprite.platform, new Vec2(i * 3, 4 + Math.cos(i)));
 		}
 
-
 		const l = this.spawn(LightTest);
-
+		this.spawn(LightTest, new Vec2(6, 4), new Color(1, 0.7, 0.7, 1), 5);
 
 		window.addEventListener("mousemove", (e) => {
-			const x = c.screenToWorld(new Vec2(e.clientX, e.clientY));
-			console.log(x.x, x.y);
-			l.transform.position = x;
+			l.transform.position = c.screenToWorld(new Vec2(e.clientX, e.clientY));
 		});
 	}
 }
@@ -40,13 +37,13 @@ class Platform extends GameObject {
 }
 
 class LightTest extends GameObject {
-	public constructor(scene: Scene, position: Vec2 = new Vec2(), color: Color = new Color(1, 1, 1, 1)) {
+	public constructor(scene: Scene, position: Vec2 = new Vec2(), color: Color = new Color(1, 1, 1, 1), radius: number = 10) {
 		super(scene);
 		this.transform.position = position;
 		this.transform.zIndex = -1;
 		const l = this.addComponent(Light);
 		l.color = color;
-		l.radius = 10;
+		l.radius = radius;
 		this.addComponent(SpriteRenderer).sprite = Sprite.light.get();
 
 		let down = false;
