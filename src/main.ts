@@ -1,5 +1,6 @@
-import { Game } from "./game";
+import { Engine } from "./engine/engine";
+import { FirstScene } from "./scenes";
 
-const game = new Game();
+const game = new Engine();
 
-await game.start();
+await game.start(FirstScene);

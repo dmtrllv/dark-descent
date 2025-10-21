@@ -1,6 +1,6 @@
 import { Component } from "../component";
 import { Color } from "../color";
-import type { Game } from "../game";
+import type { Engine } from "../engine";
 import type { Renderer } from "./renderer";
 import type { Material } from "./material";
 
@@ -12,7 +12,7 @@ export class Light extends Component {
 
 	private positionBuffer!: WebGLBuffer;
 
-	public init(game: Game): void {
+	public init(game: Engine): void {
 		this.positionBuffer = game.renderer.createArrayBuffer([0, 0]);
 	}
 

@@ -1,18 +1,18 @@
 import type { Component, ComponentType } from "./component";
-import type { Game } from "./game";
+import type { Engine } from "./engine";
 import { GameObject } from "./game-object";
 import type { Vec2 } from "./vec";
 
 export abstract class Scene {
 	private readonly gameObjects: GameObject[] = [];
 
-	public readonly game: Game;
+	public readonly game: Engine;
 
 	public readonly components: Map<ComponentType<any>, Component[]> = new Map();
 
 	private _isLoaded: boolean = false;
 
-	public constructor(game: Game) {
+	public constructor(game: Engine) {
 		this.game = game;
 	}
 

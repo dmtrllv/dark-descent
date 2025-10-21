@@ -1,14 +1,14 @@
-import { Camera, Sprite, SpriteRenderer } from "../gfx";
-import type { RegistryItem } from "../registry";
-import { GameObject } from "../game-object";
-import { Scene } from "../scene";
-import { Vec2 } from "../vec";
-import { Light } from "../gfx/light";
-import { ShadowCaster } from "../gfx/shadow-caster";
-import { Color } from "../color";
-import { Layer } from "../gfx/layer";
+import { Camera, Sprite, SpriteRenderer } from "../engine/gfx";
+import type { RegistryItem } from "../engine/registry";
+import { GameObject } from "../engine/game-object";
+import { Scene } from "../engine/scene";
+import { Vec2 } from "../engine/vec";
+import { Light } from "../engine/gfx/light";
+import { ShadowCaster } from "../engine/gfx/shadow-caster";
+import { Color } from "../engine/color";
+import { Layer } from "../engine/gfx/layer";
 
-export class First extends Scene {
+export class FirstScene extends Scene {
 	public async load(): Promise<void> {
 		const c = this.spawn().addComponent(Camera);
 

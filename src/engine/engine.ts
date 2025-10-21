@@ -1,8 +1,8 @@
 import { Renderer } from "./gfx/renderer";
 import type { Scene } from "./scene";
-import { SceneManager } from "./scene-manager";
+import { SceneManager, type SceneType } from "./scene-manager";
 
-export class Game {
+export class Engine {
 	private readonly eventListeners: EventListeners = {};
 
 	public readonly renderer: Renderer;
@@ -19,9 +19,9 @@ export class Game {
 		this.sceneManager = new SceneManager(this);
 	}
 
-	public async start() {
+	public async start(scene: SceneType<any>) {
 		await this.renderer.load();
-		await this.sceneManager.start();
+		await this.sceneManager.start(scene);
 		this.resume();
 	}
 
