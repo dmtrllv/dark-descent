@@ -17,18 +17,6 @@ export class Game {
 	public constructor() {
 		this.renderer = new Renderer();
 		this.sceneManager = new SceneManager(this);
-
-		//window.addEventListener("blur", () => {
-		//	this._active = false;
-		//});
-		//window.addEventListener("focus", () => {
-		//	this._active = true;
-		//});
-
-		//document.addEventListener("visibilitychange", () => {
-		//	this._active = document.visibilityState !== "hidden";
-		//	console.log(this._active);
-		//});
 	}
 
 	public async start() {
@@ -71,7 +59,6 @@ export class Game {
 	}
 
 	public readonly stop = () => {
-		console.log("stop!");
 		if (this._animationFrame) {
 			cancelAnimationFrame(this._animationFrame);
 			this._animationFrame = null;

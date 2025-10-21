@@ -3,7 +3,6 @@
 precision highp float;
 
 uniform sampler2D sampler;
-uniform float ambientOcculision;
 
 in vec2 textureCoord;
 
@@ -11,6 +10,5 @@ out vec4 fragColor;
 
 void main() {
     vec4 c = texture(sampler, textureCoord);
-    fragColor = vec4(c.rgb, c.a) * ambientOcculision;
-    //fragColor = vec4(1, 1, 1, 1) * ambientOcculision;
+    fragColor = vec4(c.rgb, c.a);
 }

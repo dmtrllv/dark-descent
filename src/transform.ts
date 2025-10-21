@@ -10,22 +10,15 @@ export class Transform {
 		}
 	});
 	
-	private _zIndex: number = 0;
 	private _parent: Transform | null = null;
 	private _isDirty: boolean = false;
 
 	public get position() { return this._position; }
-	public get zIndex() { return this._zIndex; }
 	public get parent() { return this._parent; }
 
 	public set position(position: Vec2) {
 		this._position.x = position.x;
 		this._position.y = position.y;
-		this._isDirty = true;
-	}
-
-	public set zIndex(zIndex: number) {
-		this._zIndex = zIndex;
 		this._isDirty = true;
 	}
 

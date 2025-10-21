@@ -1,16 +1,27 @@
-export class Registry<T = never, Args extends any[] = never> {
+export class Registry<T = never, Args extends any[] = []> {
 	public constructor() {}
 
 	private readonly items: RegistryItem<T, Args>[] = [];
 
+	private _isLoaded = false;
+
+	public get isLoaded(): boolean {
+		return this._isLoaded;
+	}
+
 	public readonly load = async (...args: Args) => {
 		await Promise.all(this.items.map(t => t["_init"](...args)));
+		this._isLoaded = true;
 	}
 
 	public readonly register = (init: (...args: Args) => (T | Promise<T>)): RegistryItem<T, Args> => {
 		const item = new RegistryItem(init);
 		this.items.push(item);
 		return item;
+	}
+
+	public readonly forEach = (callback: (item: T) => void) => {
+		this.items.forEach(item => callback(item.get()));
 	}
 }
 

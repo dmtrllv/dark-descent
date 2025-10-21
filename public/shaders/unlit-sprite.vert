@@ -5,7 +5,6 @@ in vec2 uv;
 
 // per object
 uniform vec2 position;
-uniform float zIndex;
 
 // per sprite
 uniform vec2 spriteSize;
@@ -20,6 +19,6 @@ out highp vec2 textureCoord;
 void main() {
     vec2 p = position * pixelsPerUnit;
     vec2 v = (p + (vertex * (spriteSize / 2.0f))) / screenResolution;
-    gl_Position = vec4(v * zoom, zIndex, 1.0f);
+    gl_Position = vec4(v * zoom, 0, 1.0);
     textureCoord = uv;
 }

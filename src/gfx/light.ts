@@ -13,9 +13,7 @@ export class Light extends Component {
 	private positionBuffer!: WebGLBuffer;
 
 	public init(game: Game): void {
-		console.log("init")
 		this.positionBuffer = game.renderer.createArrayBuffer([0, 0]);
-		console.log(this.positionBuffer);
 	}
 
 	public readonly render = (renderer: Renderer, material: Material) => {

@@ -33,7 +33,7 @@ export abstract class Scene {
 	public async stop() { }
 
 	public spawn<T extends GameObject, Args extends any[]>(gameObject: new (scene: Scene, ...args: Args) => T, ...args: Args): GameObject;
-	public spawn(position?: Vec2, zIndex?: number): GameObject;
+	public spawn(position?: Vec2): GameObject;
 	public spawn(a?: any, ...args: any[]): GameObject {
 		if (a && (a.prototype instanceof GameObject)) {
 			const obj = new a(this, ...args);
@@ -45,9 +45,6 @@ export abstract class Scene {
 
 			if (a !== undefined)
 				obj.transform.position = a;
-
-			if (args[0] !== undefined)
-				obj.transform.zIndex = args[0];
 
 			return obj;
 		}

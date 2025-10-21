@@ -4,7 +4,7 @@ import type { Material } from "./material";
 
 export class Camera extends Component {
 	public zoom: number = 8;
-	public ambientOcculision: number = 1;
+	public ambientOcclusion: number = 1;
 	public pixelsPerUnit: number = 16;
 
 	public readonly screenToWorld = ({ x, y }: Vec2) => {
@@ -22,7 +22,7 @@ export class Camera extends Component {
 
 	public useUniforms(gl: GL, material: Material) {
 		gl.uniform1f(material.uniforms.zoom, this.zoom);
-		gl.uniform1f(material.uniforms.ambientOcculision, this.ambientOcculision);
+		gl.uniform1f(material.uniforms.ambientOcculision, this.ambientOcclusion);
 		gl.uniform1f(material.uniforms.pixelsPerUnit, this.pixelsPerUnit);
 	}
 }

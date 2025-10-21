@@ -1,14 +1,15 @@
-import { Component } from "../component";
 import type { Game } from "../game";
 import type { Material } from "./material";
+import { RenderComponent } from "./render-component";
 import type { Renderer } from "./renderer";
 import type { Sprite } from "./sprite";
 
-export class SpriteRenderer extends Component {
+export class SpriteRenderer extends RenderComponent {
 	public sprite: Sprite | null = null;
 	private positionBuffer!: WebGLBuffer;
 
 	public init(game: Game): void {
+		super.init(game);
 		this.positionBuffer = game.renderer.createArrayBuffer([0, 0]);
 	}
 
@@ -32,7 +33,6 @@ export class SpriteRenderer extends Component {
 		gl.enableVertexAttribArray(material.attributes.uv);
 
 		gl.uniform2fv(material.uniforms.position, this.transform.position.farray);
-		gl.uniform1f(material.uniforms.zIndx, this.transform.zIndex);
 
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.sprite.texture);
