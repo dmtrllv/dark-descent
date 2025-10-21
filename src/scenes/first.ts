@@ -7,6 +7,7 @@ import { Light } from "../engine/gfx/light";
 import { ShadowCaster } from "../engine/gfx/shadow-caster";
 import { Color } from "../engine/color";
 import { Layer } from "../engine/gfx/layer";
+import { Audio } from "../engine/audio";
 
 export class FirstScene extends Scene {
 	public async load(): Promise<void> {
@@ -32,6 +33,8 @@ export class FirstScene extends Scene {
 		window.addEventListener("mousemove", (e) => {
 			l.transform.position = c.screenToWorld(new Vec2(e.clientX, e.clientY));
 		});
+
+		Audio.songs.intro.get().play(false);
 	}
 }
 

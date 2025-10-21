@@ -1,3 +1,4 @@
+import { AudioManager } from "./audio-manager";
 import { Renderer } from "./gfx/renderer";
 import type { Scene } from "./scene";
 import { SceneManager, type SceneType } from "./scene-manager";
@@ -7,9 +8,11 @@ export class Engine {
 
 	public readonly renderer: Renderer;
 	public readonly sceneManager: SceneManager;
+	public readonly audioManager: AudioManager;
 
 	private _totalTicks = 0;
 	private _lastTick = 0;
+
 	private _animationFrame: number | null = null;
 
 	private _active = true;
@@ -17,9 +20,11 @@ export class Engine {
 	public constructor() {
 		this.renderer = new Renderer();
 		this.sceneManager = new SceneManager(this);
+		this.audioManager = new AudioManager();
 	}
 
 	public async start(scene: SceneType<any>) {
+		await this.audioManager.load();
 		await this.renderer.load();
 		await this.sceneManager.start(scene);
 		this.resume();

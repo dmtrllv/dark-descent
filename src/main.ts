@@ -1,6 +1,12 @@
 import { Engine } from "./engine/engine";
 import { FirstScene } from "./scenes";
 
-const game = new Engine();
+const startBtn = document.querySelector("div")!;
 
-await game.start(FirstScene);
+startBtn.onclick = async () => {
+	startBtn.onclick = null;
+	startBtn.remove();
+
+	const game = new Engine();
+	await game.start(FirstScene);
+}
