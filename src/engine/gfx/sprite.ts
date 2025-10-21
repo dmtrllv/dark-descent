@@ -4,6 +4,8 @@ import { Renderer } from "./renderer";
 export class Sprite {
 	public static readonly registry = new Registry<Sprite, [Renderer]>();
 
+	public static readonly register = (path: string) => this.registry.register(async (renderer) => new Sprite(renderer, await this.loadImage(path)));
+
 	private static readonly loadImage = (path: string) => new Promise<HTMLImageElement>((res, rej) => {
 		const image = new Image();
 		image.onload = () => res(image);
@@ -31,12 +33,4 @@ export class Sprite {
 		this.texture = texture;
 		this.size = [img.width, img.height];
 	}
-
-
-	private static readonly register = (path: string) => this.registry.register(async (renderer) => new Sprite(renderer, await this.loadImage(path)));
-
-	public static readonly platform = this.register("/sprites/platform.bmp");
-	public static readonly platform2 = this.register("/sprites/platform-2.bmp");
-	public static readonly light = this.register("/sprites/light.bmp");
-	public static readonly background = this.register("/sprites/background.bmp");
 }

@@ -1,3 +1,4 @@
+import { Animation } from "./animation";
 import { AudioManager } from "./audio-manager";
 import { Renderer } from "./gfx/renderer";
 import type { Scene } from "./scene";
@@ -26,6 +27,7 @@ export class Engine {
 	public async start(scene: SceneType<any>) {
 		await this.audioManager.load();
 		await this.renderer.load();
+		await Animation.registry.load();
 		await this.sceneManager.start(scene);
 		this.resume();
 	}

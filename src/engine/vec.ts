@@ -60,4 +60,10 @@ export class Vec2 {
 		return this;
 	}
 
+	public readonly round = (scale: number) => {
+		this.x = Math.round(this.x * scale) / scale;
+		this.y = Math.round(this.y * scale) / scale;
+		return this;
+	}
+
 }

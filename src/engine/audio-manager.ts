@@ -10,11 +10,11 @@ export class AudioManager {
 	}
 
 	public readonly play = (audio: Audio, oneShot: boolean = true) => {
+		audio["audio"].currentTime = 0
 		audio["audio"].play();
 		
 		const onEnd = () => {
 			audio["audio"].removeEventListener("ended", onEnd);
-			audio["audio"].currentTime = 0;
 			if (!oneShot) {
 				this.play(audio, oneShot);
 			}

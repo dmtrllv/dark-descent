@@ -5,7 +5,7 @@ import type { Renderer } from "./renderer";
 import type { Material } from "./material";
 
 export class Light extends Component {
-	public color: Color = new Color(1, 0, 0, 0);
+	public color: Color = new Color(1, 1, 1, 0);
 	public intensity: number = 1;
 	public falloff: number = 1;
 	public radius: number = 1;

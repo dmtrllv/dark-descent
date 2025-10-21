@@ -17,12 +17,13 @@ export class Camera extends Component {
 		const wx = ((x - hw) * 2) / this.pixelsPerUnit;
 		const wy = (-(y - hh) * 2) / this.pixelsPerUnit;
 
-		return new Vec2(wx / this.zoom, wy / this.zoom);
+		return new Vec2(wx / this.zoom + this.transform.position.x, wy / this.zoom + this.transform.position.y);
 	}
 
 	public useUniforms(gl: GL, material: Material) {
 		gl.uniform1f(material.uniforms.zoom, this.zoom);
 		gl.uniform1f(material.uniforms.ambientOcculision, this.ambientOcclusion);
 		gl.uniform1f(material.uniforms.pixelsPerUnit, this.pixelsPerUnit);
+		gl.uniform2fv(material.uniforms.cameraPosition, this.transform.position.array);
 	}
 }
