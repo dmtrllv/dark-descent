@@ -19,6 +19,11 @@ export class GameObject {
 		return component;
 	}
 
+	public getComponent<T extends Component>(type: ComponentType<T>): T | null {
+		return (this.components.find(c => c.constructor === type) || null) as T | null;
+	}
+	
+
 	public update(delta: number) {
 		this.components.forEach(c => c.update(delta));
 	}

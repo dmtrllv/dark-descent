@@ -13,6 +13,10 @@ export class Shader {
 	public static readonly unlitSpriteFragment = this.register("/shaders/unlit-sprite.frag");
 	public static readonly shadowVertex = this.register("/shaders/shadow.vert");
 	public static readonly shadowFragment = this.register("/shaders/shadow.frag");
+	public static readonly lightVertex = this.register("/shaders/light.vert");
+	public static readonly lightFragment = this.register("/shaders/light.frag");
+	public static readonly lightMergerVertex = this.register("/shaders/light-merger.vert");
+	public static readonly lightMergerFragment = this.register("/shaders/light-merger.frag");
 	
 	public readonly path: string;
 	public readonly attributes: Record<string, string>; 

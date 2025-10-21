@@ -13,6 +13,7 @@ export class Sprite {
 
 	public readonly img: HTMLImageElement;
 	public readonly texture: WebGLTexture;
+	public readonly size: [number, number];
 
 	private constructor(renderer: Renderer, img: HTMLImageElement) {
 		const gl = renderer.gl;
@@ -28,6 +29,7 @@ export class Sprite {
 
 		this.img = img;
 		this.texture = texture;
+		this.size = [img.width, img.height];
 	}
 
 
@@ -36,4 +38,5 @@ export class Sprite {
 	public static readonly platform = this.register("/sprites/platform.bmp");
 	public static readonly platform2 = this.register("/sprites/platform-2.bmp");
 	public static readonly light = this.register("/sprites/light.bmp");
+	public static readonly background = this.register("/sprites/background.bmp");
 }

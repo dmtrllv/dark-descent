@@ -38,6 +38,8 @@ export class SpriteRenderer extends Component {
 		gl.bindTexture(gl.TEXTURE_2D, this.sprite.texture);
 		gl.uniform1i(material.uniforms.sampler, 0);
 
-		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 6);
+		gl.uniform2fv(material.uniforms.spriteSize, this.sprite.size);
+
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
 }

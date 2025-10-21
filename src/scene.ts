@@ -43,11 +43,11 @@ export abstract class Scene {
 			const obj = new GameObject(this);
 			this.gameObjects.push(obj);
 
-			if (args[0] !== undefined)
-				obj.transform.position = args[0];
+			if (a !== undefined)
+				obj.transform.position = a;
 
-			if (args[1] !== undefined)
-				obj.transform.zIndex = args[1];
+			if (args[0] !== undefined)
+				obj.transform.zIndex = args[0];
 
 			return obj;
 		}

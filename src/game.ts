@@ -12,23 +12,23 @@ export class Game {
 	private _lastTick = 0;
 	private _animationFrame: number | null = null;
 
-	private _active = false;
+	private _active = true;
 
 	public constructor() {
 		this.renderer = new Renderer();
 		this.sceneManager = new SceneManager(this);
 
-		window.addEventListener("blur", () => {
-			this._active = false;
-		});
-		window.addEventListener("focus", () => {
-			this._active = true;
-		});
+		//window.addEventListener("blur", () => {
+		//	this._active = false;
+		//});
+		//window.addEventListener("focus", () => {
+		//	this._active = true;
+		//});
 
-		document.addEventListener("visibilitychange", () => {
-			this._active = document.visibilityState !== "hidden";
-			console.log(this._active);
-		});
+		//document.addEventListener("visibilitychange", () => {
+		//	this._active = document.visibilityState !== "hidden";
+		//	console.log(this._active);
+		//});
 	}
 
 	public async start() {

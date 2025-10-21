@@ -11,6 +11,8 @@ export class Material {
 
 	public static readonly unlitSprite = this.register(Shader.unlitSpriteVertex, Shader.unlitSpriteFragment);
 	public static readonly shadow = this.register(Shader.shadowVertex, Shader.shadowFragment);
+	public static readonly light = this.register(Shader.lightVertex, Shader.lightFragment);
+	public static readonly lightMerger = this.register(Shader.lightMergerVertex, Shader.lightMergerFragment);
 
 	public readonly attributes: Record<string, number> = {};
 	public readonly uniforms: Record<string, WebGLUniformLocation> = {};

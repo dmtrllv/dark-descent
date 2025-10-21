@@ -10,5 +10,5 @@ void main() {
     float aspectRatio = screenResolution.x / screenResolution.y;
     vec2 p = (position + vertex) * zoom;
     p.x /= aspectRatio;
-    gl_Position = vec4(p.xy, 0, 1.0);
+    gl_Position = vec4(p.xy, 1, 1.0);
 }

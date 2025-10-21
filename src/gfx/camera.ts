@@ -1,12 +1,28 @@
 import { Component } from "../component";
+import { Vec2 } from "../vec";
+import type { Material } from "./material";
 
 export class Camera extends Component {
-	public zoom: number = 1 / 4;
+	public zoom: number = 8;
 	public ambientOcculision: number = 1;
+	public pixelsPerUnit: number = 16;
 
-	public init(): void {
-		(window as any).ao = (v: number) => {
-			this.ambientOcculision = v;
-		} 
+	public readonly screenToWorld = ({ x, y }: Vec2) => {
+		const w = window.innerWidth;
+		const h = window.innerHeight;
+
+		const hw = w / 2;
+		const hh = h / 2;
+
+		const wx = ((x - hw) * 2) / this.pixelsPerUnit;
+		const wy = (-(y - hh) * 2) / this.pixelsPerUnit;
+
+		return new Vec2(wx / this.zoom, wy / this.zoom);
+	}
+
+	public useUniforms(gl: GL, material: Material) {
+		gl.uniform1f(material.uniforms.zoom, this.zoom);
+		gl.uniform1f(material.uniforms.ambientOcculision, this.ambientOcculision);
+		gl.uniform1f(material.uniforms.pixelsPerUnit, this.pixelsPerUnit);
 	}
 }

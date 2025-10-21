@@ -1,4 +1,8 @@
 export class Vec2 {
+	static scale(v: Vec2, delta: number): Vec2 {
+		return new Vec2(v.x * delta, v.y * delta);
+	}
+
 	public mul({ x, y }: Vec2) {
 		this.x *= x;
 		this.y *= y;
@@ -40,8 +44,13 @@ export class Vec2 {
 
 	public normalize(): Vec2 {
 		const l = this.length;
-		this.x /= l;
-		this.y /= l;
+		if (l === 0) {
+			this.x = 0;
+			this.y = 0;
+		} else {
+			this.x /= l;
+			this.y /= l;
+		}
 		return this;
 	}
 

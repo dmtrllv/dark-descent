@@ -7,5 +7,5 @@ uniform float ambientOcculision;
 out vec4 fragColor;
 
 void main() {
-    fragColor = vec4(0, 0, 0, 1) * ambientOcculision;
+    fragColor = vec4(1, 1, 1, 1) * ambientOcculision;
 }
