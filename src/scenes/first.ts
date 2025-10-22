@@ -5,6 +5,7 @@ import { CamPlayerFollower } from "../components";
 
 import * as sprites from "../sprites";
 import { bird1, bird2, bird3 } from "../audio";
+import { MuteBtn } from "../components/mute-btn";
 
 
 export class FirstScene extends Scene {
@@ -15,7 +16,6 @@ export class FirstScene extends Scene {
 	];
 
 	public async onLoad(): Promise<void> {
-		console.log("onload");
 		const camera = this.spawn().addComponent(Camera).addComponent(CamPlayerFollower);
 
 		this.spawn(Moon, camera.transform);
@@ -54,6 +54,8 @@ export class FirstScene extends Scene {
 
 		this.spawn(Fire, new Vec2(-3, -0.4));
 		this.spawn(Fire, new Vec2(12, -0.4));
+
+		this.spawn(new Vec2(-1, 1)).addComponent(MuteBtn);
 
 		this.playBirds();
 	}

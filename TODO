@@ -6,7 +6,6 @@ Audio:
 Renderer:
 	- 2D normal mapping
 	- Shadow render pass
-	- UI
 	
 	Performance: 
 		- add uniform object buffers

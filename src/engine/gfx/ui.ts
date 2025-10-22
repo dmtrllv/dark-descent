@@ -18,16 +18,23 @@ export class UI extends RenderComponent {
 
 	public onInit(): void {
 		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
-		window.addEventListener("mousedown", () => {
-			if (this.isHovering() && this.onClick) {
-				this.onClick();
-			}
-		})
+		window.addEventListener("mousedown", this.onMouseDown);
+	}
+
+	public onDestroy(): void {
+		super.onDestroy();
+		window.removeEventListener("mousedown", this.onMouseDown);
+	}
+
+	private readonly onMouseDown = () => {
+		if (this.isHovering() && this.onClick) {
+			this.onClick();
+		}
 	}
 
 	public render(renderer: Renderer, material: Material) {
 		const b = this.isHovering() ? this.hoverSprite || this.background : this.background;
-		
+
 		if (!this.sprite)
 			return;
 
@@ -72,7 +79,7 @@ export class UI extends RenderComponent {
 
 	private calcPosition(cam: Camera): Vec2 {
 		if (!this.anchor) {
-			return this.transform.position;
+			return Vec2.add(this.transform.position, cam.transform.position);
 		}
 
 		const w = window.innerWidth;
@@ -81,7 +88,7 @@ export class UI extends RenderComponent {
 		const x = ((this.anchor.x * w) / cam.pixelsPerUnit) / cam.zoom;
 		const y = ((this.anchor.y * h) / cam.pixelsPerUnit) / cam.zoom;
 
-		return new Vec2(x, y).add(this.transform.position);
+		return new Vec2(x, y).add(this.transform.position).add(cam.transform.position);
 	}
 
 	public readonly isHovering = () => {

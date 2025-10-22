@@ -1,3 +1,4 @@
+import { MuteBtn } from "../components/mute-btn";
 import { AudioManager, Camera, Component, RegistryItem, Scene, Sprite, Vec2 } from "../engine";
 import { UI } from "../engine/gfx/ui";
 import { SceneManager } from "../engine/scene-manager";
@@ -37,18 +38,4 @@ export class StartMenu extends Scene {
 		console.log("startOffline");
 		SceneManager.load(FirstScene);
 	}
-}
-
-class MuteBtn extends Component {
-	public readonly muteSprite = muteSprite.get();
-	public readonly unmuteSprite = unmuteSprite.get();
-
-	public readonly ui = this.addComponent(UI, {
-		onClick: () => {
-			AudioManager.toggleMute();
-			this.ui.sprite = AudioManager.isMuted ? this.unmuteSprite : this.muteSprite;
-		},
-		sprite: this.muteSprite,
-		anchor: new Vec2(1, -1),
-	});
 }

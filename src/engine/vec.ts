@@ -9,6 +9,10 @@ export class Vec2 {
 		return new Vec2(v.x * s, v.y * s);
 	}
 
+	public static readonly add = (a: Vec2, b: Vec2): Vec2 => {
+		return new Vec2(a.x + b.x, a.y + b.y);
+	}
+
 	public static readonly sub = (a: Vec2, b: Vec2): Vec2 => {
 		return new Vec2(a.x - b.x, a.y - b.y);
 	}
