@@ -1,6 +1,7 @@
 import { Animation } from "./animation";
 import { AudioManager } from "./audio-manager";
 import { Renderer } from "./gfx/renderer";
+import { Physics } from "./physics";
 import type { Scene } from "./scene";
 import { SceneManager, type SceneType } from "./scene-manager";
 import { Time } from "./time";
@@ -58,6 +59,7 @@ export class Engine {
 		if (scene) {
 			if (this._isActive) {
 				scene.update();
+				Physics.update(scene);
 				AudioManager.tick(scene);
 			}
 			Renderer.render(scene);

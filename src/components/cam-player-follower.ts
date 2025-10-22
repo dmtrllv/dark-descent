@@ -3,7 +3,7 @@ import { Component, Transform, Time } from "../engine";
 export class CamPlayerFollower extends Component {
 	public target: Transform | null = null;
 
-	public update(): void {
+	public onUpdate(): void {
 		if (!this.target)
 			return;
 

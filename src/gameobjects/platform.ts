@@ -1,12 +1,26 @@
-import { GameObject, Layer, RegistryItem, ShadowCaster, Sprite, SpriteRenderer, Vec2 } from "../engine";
+import { GameObject, Layer, LineCollider, RegistryItem, ShadowCaster, Sprite, SpriteRenderer, Vec2 } from "../engine";
+import { platform } from "../sprites";
 
 export class Platform extends GameObject {
+	public static default(position?: Vec2): Platform {
+		return new Platform(platform, position);
+	}
+
 	public constructor(sprite: RegistryItem<Sprite>, position: Vec2 = new Vec2()) {
 		super();
 		this.transform.position = position;
-		const r = this.addComponent(SpriteRenderer);
-		r.sprite = sprite.get();
-		r.layer = Layer.map.get();
-		this.addComponent(ShadowCaster);
+		this.addComponent(SpriteRenderer, {
+			sprite: sprite.get(),
+			layer: Layer.map.get(),
+		});
+		
+		this.addComponent(ShadowCaster, {
+
+		});
+		
+		this.addComponent(LineCollider, {
+			start: new Vec2(-1.5, 0),
+			end: new Vec2(1.5, 0),
+		});
 	}
 }

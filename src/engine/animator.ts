@@ -9,11 +9,11 @@ export class Animator extends Component {
 	public startTime: number = performance.now();
 	private sr: SpriteRenderer | null = null;
 
-	public start(): void {
+	public onStart(): void {
 		this.sr = this.gameObject.getComponent(SpriteRenderer);
 	}
 
-	update() {
+	onUpdate() {
 		if(!this.sr)
 			return;
 

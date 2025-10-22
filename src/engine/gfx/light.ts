@@ -11,7 +11,7 @@ export class Light extends Component {
 
 	private positionBuffer!: WebGLBuffer;
 
-	public init(): void {
+	public onInit(): void {
 		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
 	}
 

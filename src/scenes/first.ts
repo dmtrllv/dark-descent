@@ -24,20 +24,20 @@ export class FirstScene extends Scene {
 			platforms: [
 				{
 					background: sprites.platform,
-					position: new Vec2(0, 0)
+					position: new Vec2(0, -1)
 				},
 				{
 					background: sprites.platform,
-					position: new Vec2(4, 0)
+					position: new Vec2(4, -1)
 				},
 				{
 					background: sprites.platform,
-					position: new Vec2(8, 0)
+					position: new Vec2(8, -1)
 				}
 			],
 		});
 
-		camera.target = this.spawn(Player).transform;
+		camera.target = this.spawn(Player, new Vec2(0, 2)).transform;
 
 		this.playBirds();
 	}

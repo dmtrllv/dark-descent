@@ -18,7 +18,7 @@ export class Moon extends GameObject {
 class MoonFollower extends Component {
 	public camera: Transform | null = null;
 
-	public update(): void {
+	public onUpdate(): void {
 		if (this.camera) {
 			this.transform.position.x = (this.camera.position.x - 3) / 3;
 			this.transform.position.y = (this.camera.position.y + 20) / 3;

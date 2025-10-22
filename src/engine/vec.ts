@@ -9,12 +9,6 @@ export class Vec2 {
 		return new Vec2(v.x * s, v.y * s);
 	}
 
-	public mul({ x, y }: Vec2) {
-		this.x *= x;
-		this.y *= y;
-		return this;
-	}
-
 	public static readonly sub = (a: Vec2, b: Vec2): Vec2 => {
 		return new Vec2(a.x - b.x, a.y - b.y);
 	}
@@ -32,6 +26,14 @@ export class Vec2 {
 
 	public get length() { return Math.sqrt(this.x ** 2 + this.y ** 2); }
 
+	public get normalized() {
+		const l = this.length;
+		if (l === 0) {
+			return new Vec2();
+		}
+		return new Vec2(this.x /= l, this.y /= l);
+	}
+
 	public constructor(x: number = 0, y: number = 0) {
 		this.x = x;
 		this.y = y;
@@ -47,6 +49,23 @@ export class Vec2 {
 		return this;
 	}
 
+	public sub({ x, y }: Vec2): Vec2 {
+		this.x -= x;
+		this.y -= y;
+		return this;
+	}
+
+	public mul({ x, y }: Vec2): Vec2 {
+		this.x *= x;
+		this.y *= y;
+		return this;
+	}
+
+	public div({ x, y }: Vec2): Vec2 {
+		this.x = x === 0 ? 0 : this.x / x;
+		this.y = y === 0 ? 0 : this.y / y;
+		return this;
+	}
 
 	public normalize(): Vec2 {
 		const l = this.length;
@@ -71,5 +90,6 @@ export class Vec2 {
 		this.y = Math.round(this.y * scale) / scale;
 		return this;
 	}
-
 }
+
+//export const vec2 = (x: number = 0, y: number = 0) => new Vec2(x, y);

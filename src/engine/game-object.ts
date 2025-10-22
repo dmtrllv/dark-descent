@@ -17,6 +17,4 @@ export class GameObject {
 	public readonly getComponent = <T extends Component>(type: ComponentType<T>): T | null => {
 		return (this.components.find(c => c.constructor === type) || null) as T | null;
 	}
-
-	public readonly spawn: Scene["spawn"] = (...args: any[]) => SceneManager.activeScene.spawn(...args);
 }

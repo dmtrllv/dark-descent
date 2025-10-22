@@ -7,7 +7,7 @@ export class SpriteRenderer extends RenderComponent {
 	public sprite: Sprite | null = null;
 	private positionBuffer!: WebGLBuffer;
 
-	public init(): void {
+	public onInit(): void {
 		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
 	}
 

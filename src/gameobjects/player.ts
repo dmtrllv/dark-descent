@@ -1,11 +1,12 @@
-import { Component, GameObject, Layer, Light, SpriteRenderer, Vec2, AudioListener } from "../engine";
-import { Time } from "../engine/time";
+import { Component, GameObject, Layer, Light, SpriteRenderer, Vec2, AudioListener, BoxCollider, Collider, Rigidbody } from "../engine";
 
 import * as sprites from "../sprites";
 
 export class Player extends GameObject {
-	public constructor() {
+	public constructor(position: Vec2 = new Vec2) {
 		super();
+
+		this.transform.position = position;
 
 		this.addComponent(Light, { radius: 8 });
 
@@ -14,46 +15,60 @@ export class Player extends GameObject {
 			layer: Layer.map.get(),
 		});
 
+		this.addComponent(Rigidbody);
 		this.addComponent(InputHandler);
 		this.addComponent(AudioListener);
+		this.addComponent(BoxCollider, {
+			size: new Vec2(0.02, 1)
+		});
 	}
 }
 
 
 class InputHandler extends Component {
-	private v: Vec2 = new Vec2();
+	public readonly rb: Rigidbody;
 
-	public start(): void {
+	public constructor(gameObject: GameObject) {
+		super(gameObject);
+		this.rb = this.gameObject.getComponent(Rigidbody)!;
+	}
+
+	public onStart(): void {
 		window.addEventListener("keydown", (e) => {
 			switch (e.key) {
 				case "a":
-					this.v.x = -1;
-					break;
-				case "s":
-					this.v.y = -1;
+					this.rb.velocity.x = -1;
 					break;
 				case "d":
-					this.v.x = 1;
-					break;
-				case "w":
-					this.v.y = 1;
+					this.rb.velocity.x = 1;
 					break;
 			}
-			this.v.normalize();
 		});
+
+		let didJump = false;
 
 		window.addEventListener("keyup", (e) => {
 			switch (e.key) {
 				case "a":
 				case "d":
-					this.v.x = 0;
-					break
-				case "s":
-				case "w":
-					this.v.y = 0;
+					this.rb.velocity.x = 0;
+					break;
+				case " ":
+					didJump = false;
 					break;
 			}
-			this.v.normalize();
+		});
+
+		window.addEventListener("keypress", (e) => {
+			if(didJump)
+				return;
+			
+			switch (e.key.toLowerCase()) {
+				case " ":
+					this.rb.velocity.y = 3;
+					didJump = true;
+					break
+			}
 		});
 
 		let isSliding = false;
@@ -71,16 +86,19 @@ class InputHandler extends Component {
 			const x = e.touches[0].clientX;
 			const y = e.touches[0].clientY;
 			const [sx, sy] = start;
-			this.v = new Vec2(x - sx, -(y - sy)).normalize();
+			this.rb.velocity = new Vec2(x - sx, -(y - sy)).normalize();
 		})
 
 		window.addEventListener("touchend", () => {
 			isSliding = false;
-			this.v = new Vec2(0, 0);
+			this.rb.velocity = new Vec2(0, 0);
 		});
 	}
 
-	public update(): void {
-		this.transform.position.add(Vec2.scale(this.v, Time.delta * 3));
+	public onCollision(col: Collider): void {
+		const y = this.transform.position.y - 1;
+		const delta = (col.transform.position.y + col.top) - y;
+		this.transform.position.y += delta;
+		this.rb.velocity.y = 0;
 	}
 }

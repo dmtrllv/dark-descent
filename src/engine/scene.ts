@@ -9,28 +9,38 @@ export abstract class Scene {
 
 	private _isLoaded: boolean = false;
 
-	public constructor() {}
+	public constructor() { }
 
 	public readonly getComponents = <T extends Component>(type: ComponentType<T>): T[] => {
 		return (this.components.get(type) || []) as T[];
 	}
 
+	public readonly getComponentsOfKind = <T extends Component>(type: abstract new (...args: any[]) => T): T[] => {
+		const components: Component[][] = [];
+		for (const [t, c] of this.components) {
+			if ((type === t) || (t.prototype instanceof type)) {
+				components.push(c);
+			}
+		}
+		return components.flat() as T[];
+	}
+
 	public readonly load = async () => {
 		await this.onLoad();
 		this._isLoaded = true;
-		for(const [_, c] of this.components) {
-			c.forEach(c => c.start());
+		for (const [_, c] of this.components) {
+			c.forEach(c => c.onStart());
 		}
 	}
 
-	public async onLoad() {}
-	
+	public async onLoad() { }
+
 	public async start() {
-		for(const [_, c] of this.components) {
-			c.forEach(c => c.start());
+		for (const [_, c] of this.components) {
+			c.forEach(c => c.onStart());
 		}
 	}
-	
+
 	public async stop() { }
 
 	public spawn<T extends GameObject, Args extends any[]>(gameObject: new (...args: Args) => T, ...args: Args): GameObject;
@@ -56,20 +66,20 @@ export abstract class Scene {
 			this.components.set(type, []);
 		}
 		const component = new type(gameObject);
-		for(const k in props) {
-			if(k in component) {
+		for (const k in props) {
+			if (k in component) {
 				component[k as keyof typeof component] = (props as any)[k];
 			}
 		}
-		component.init();
+		component.onInit();
 		this.components.get(type)?.push(component);
-		if(this._isLoaded)
-			component.start();
+		if (this._isLoaded)
+			component.onStart();
 		return component;
 	}
 
 	public update() {
-		this.gameObjects.forEach(g => g.components.forEach(c => c.update()));
+		this.gameObjects.forEach(g => g.components.forEach(c => c.onUpdate()));
 	}
-	
+
 }

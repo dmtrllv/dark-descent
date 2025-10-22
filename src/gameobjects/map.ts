@@ -1,25 +1,24 @@
 import { GameObject, Layer, RegistryItem, Sprite, SpriteRenderer, Vec2 } from "../engine";
+import { SceneManager } from "../engine/scene-manager";
+import { Platform } from "./platform";
 
 export class Map extends GameObject {
 	public constructor({ backgrounds, platforms }: MapProps) {
 		super();
 
+		const scene = SceneManager.activeScene;
+
 		const bg = Layer.background.get();
 
 		backgrounds.forEach(b => {
-			this.spawn().addComponent(SpriteRenderer, {
+			scene.spawn().addComponent(SpriteRenderer, {
 				layer: bg,
 				sprite: b.get()
 			});
 		});
 
-		const platformLayer = Layer.map.get();
-
 		platforms.forEach(p => {
-			this.spawn(p.position).addComponent(SpriteRenderer, {
-				layer: platformLayer,
-				sprite: p.background.get()
-			});
+			scene.spawn(Platform, p.background, p.position);
 		});
 	}
 }

@@ -27,11 +27,11 @@ export class Fire extends GameObject {
 class FireLight extends Component {
 	private light: Light | null = null;
 
-	public start(): void {
+	public onStart(): void {
 		this.light = this.getComponent(Light);
 	}
 
-	public update(): void {
+	public onUpdate(): void {
 		if (this.light && (Math.random() > 0.7))
 			this.light.intensity = (Math.random() * 0.15) + 0.82;
 	}
