@@ -53,7 +53,6 @@ export class Engine {
 		this._lastTick = time;
 
 		this._totalTicks++;
-		const d = delta / 1000;
 
 		const scene = SceneManager.activeScene;
 		if (scene) {

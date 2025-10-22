@@ -8,7 +8,7 @@ Renderer:
 	- Shadow render pass
 	- UI
 	
-	performance: 
+	Performance: 
 		- add uniform object buffers
 		- add vertex objects
 		- instanced rendering
@@ -17,9 +17,16 @@ Physics:
 	- Colission
 	- Ray shooting
 	
+GameObject:
+	- Add Tags -> use for queries
+
 Animator/Animation:
 	- create an animation from a sprite sheet
 	
+Settings:
+	- fps
+	- UI scale
+
 Game:
 	- Add min/max offset for target following
 	- Networking/multiplayer + offline mode
