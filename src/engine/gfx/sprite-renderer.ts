@@ -1,16 +1,14 @@
-import type { Engine } from "../engine";
 import type { Material } from "./material";
 import { RenderComponent } from "./render-component";
-import type { Renderer } from "./renderer";
+import { Renderer } from "./renderer";
 import type { Sprite } from "./sprite";
 
 export class SpriteRenderer extends RenderComponent {
 	public sprite: Sprite | null = null;
 	private positionBuffer!: WebGLBuffer;
 
-	public init(game: Engine): void {
-		super.init(game);
-		this.positionBuffer = game.renderer.createArrayBuffer([0, 0]);
+	public init(): void {
+		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
 	}
 
 	public render(renderer: Renderer, material: Material) {

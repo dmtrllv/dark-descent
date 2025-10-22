@@ -5,7 +5,7 @@ import { Transform } from "./transform";
 export class GameObject {
 	public readonly transform: Transform = new Transform(this);
 
-	private readonly components: Component[] = [];
+	public readonly components: Component[] = [];
 
 	public readonly scene: Scene;
 
@@ -13,18 +13,13 @@ export class GameObject {
 		this.scene = scene;
 	}
 
-	public addComponent<T extends Component>(type: ComponentType<T>) {
+	public readonly addComponent = <T extends Component>(type: ComponentType<T>) => {
 		const component = this.scene.createComponent(type, this);
-		this.components.push(component);	
+		this.components.push(component);
 		return component;
 	}
 
-	public getComponent<T extends Component>(type: ComponentType<T>): T | null {
+	public readonly getComponent = <T extends Component>(type: ComponentType<T>): T | null => {
 		return (this.components.find(c => c.constructor === type) || null) as T | null;
-	}
-	
-
-	public update(delta: number) {
-		this.components.forEach(c => c.update(delta));
 	}
 }

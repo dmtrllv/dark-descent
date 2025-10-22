@@ -7,28 +7,31 @@ import { SceneManager, type SceneType } from "./scene-manager";
 export class Engine {
 	private readonly eventListeners: EventListeners = {};
 
-	public readonly renderer: Renderer;
-	public readonly sceneManager: SceneManager;
-	public readonly audioManager: AudioManager;
-
 	private _totalTicks = 0;
 	private _lastTick = 0;
 
 	private _animationFrame: number | null = null;
 
-	private _active = true;
+	private _isActive = true;
 
 	public constructor() {
-		this.renderer = new Renderer();
-		this.sceneManager = new SceneManager(this);
-		this.audioManager = new AudioManager();
+		window.addEventListener("blur", this.onInactive);
+		window.addEventListener("focus", this.onActive);
+	}
+
+	private readonly onActive = () => {
+		this._isActive = true;
+	}
+
+	private readonly onInactive = () => {
+		this._isActive = false;
 	}
 
 	public async start(scene: SceneType<any>) {
-		await this.audioManager.load();
-		await this.renderer.load();
+		await AudioManager.load();
+		await Renderer.load();
 		await Animation.registry.load();
-		await this.sceneManager.start(scene);
+		await SceneManager.start(scene);
 		this.resume();
 	}
 
@@ -50,13 +53,13 @@ export class Engine {
 		this._totalTicks++;
 		const d = delta / 1000;
 
-		const scene = this.sceneManager.activeScene;
+		const scene = SceneManager.activeScene;
 		if (scene) {
-			if (this._active) {
+			if (this._isActive) {
 				scene.update(d);
-				this.audioManager.update(scene);
+				AudioManager.tick(scene);
 			}
-			this.renderer.render(scene, d);
+			Renderer.render(scene, d);
 		}
 
 		this._animationFrame = requestAnimationFrame(this.tick);

@@ -1,6 +1,6 @@
 import { intro, intro2 } from "./songs";
 
-let current = 0;
+let current = Math.round(Math.random());
 
 const songs = [
 	intro,

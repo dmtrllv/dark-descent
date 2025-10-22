@@ -12,21 +12,27 @@ import { Sprite } from "./sprite";
 import { SpriteRenderPass } from "./sprite-render-pass";
 
 export class Renderer {
+	private static readonly _instance = new Renderer();
+	public static readonly load = this._instance.load.bind(this._instance);
+	public static readonly render = this._instance.render.bind(this._instance);
+	public static readonly createArrayBuffer = this._instance.createArrayBuffer.bind(this._instance);
+
 	private readonly canvas: HTMLCanvasElement;
 	public readonly gl: GL;
 
 	public readonly uvBuffer: WebGLBuffer;
 	public readonly vertexBuffer: WebGLBuffer;
 
-	public constructor() {
+	private constructor() {
 		this.canvas = document.createElement("canvas");
-		this.gl = this.canvas.getContext("webgl2")!; // TODO: check
+		const gl = this.canvas.getContext("webgl2")!;
+		if(!gl)
+			throw new Error(`Could not get WebGL 2 context!`);
+		this.gl = gl; // TODO: check
 
 		document.body.appendChild(this.canvas);
 		this.onResize();
 		window.addEventListener("resize", this.onResize);
-
-		const gl = this.gl;
 
 		gl.clearColor(0, 0, 0, 0);
 

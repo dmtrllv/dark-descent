@@ -1,7 +1,6 @@
 import { Component } from "../component";
 import { Color } from "../color";
-import type { Engine } from "../engine";
-import type { Renderer } from "./renderer";
+import { Renderer } from "./renderer";
 import type { Material } from "./material";
 
 export class Light extends Component {
@@ -12,8 +11,8 @@ export class Light extends Component {
 
 	private positionBuffer!: WebGLBuffer;
 
-	public init(game: Engine): void {
-		this.positionBuffer = game.renderer.createArrayBuffer([0, 0]);
+	public init(): void {
+		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
 	}
 
 	public readonly render = (renderer: Renderer, material: Material) => {

@@ -7,9 +7,9 @@ import { AudioEmitter } from "../engine/audio-emitter";
 import { AudioListener } from "../engine/audio-listener";
 
 export class FirstScene extends Scene {
-	public async load(): Promise<void> {
+	public async onLoad(): Promise<void> {
 		const c = this.spawn().addComponent(Camera);
-		const follow = c.gameObject.addComponent(Follower);
+		const follow = c.addComponent(Follower);
 
 		// set background and moon
 		this.spawn(Moon, c.transform, new Vec2(-3, 7));
@@ -145,6 +145,29 @@ class Movable extends Component {
 			}
 			this.v.normalize();
 		});
+
+		let isSliding = false;
+
+		let start = [0, 0];
+
+		window.addEventListener("touchstart", (e) => {
+			isSliding = true;
+			start = [e.touches[0]!.clientX, e.touches[0]!.clientY];
+		});
+
+		window.addEventListener("touchmove", (e) => {
+			if (!isSliding)
+				return;
+			const x = e.touches[0].clientX;
+			const y = e.touches[0].clientY;
+			const [sx, sy] = start;
+			this.v = new Vec2(x - sx, -(y - sy)).normalize();
+		})
+
+		window.addEventListener("touchend", () => {
+			isSliding = false;
+			this.v = new Vec2(0, 0);
+		});
 	}
 
 	public update(delta: number): void {
@@ -168,12 +191,21 @@ class Fire extends GameObject {
 		const audioEmitter = this.addComponent(AudioEmitter);
 		audioEmitter.audio = fireCrackles.get().clone();
 		audioEmitter.audio.repeat(Math.random() * 6000, 100);
+
+		this.addComponent(FireLight);
+	}
+}
+
+class FireLight extends Component {
+	private light: Light | null = null;
+
+	public start(): void {
+		this.light = this.getComponent(Light);
 	}
 
-	public update(delta: number): void {
-		super.update(delta);
-		if (Math.random() > 0.7)
-			this.getComponent(Light)!.intensity = (Math.random() * 0.15) + 0.82;
+	public update(): void {
+		if (this.light && (Math.random() > 0.7))
+			this.light.intensity = (Math.random() * 0.15) + 0.82;
 	}
 }
 
@@ -189,12 +221,17 @@ class Moon extends GameObject {
 		r.sprite = sprites.moon.get();
 		r.layer = Layer.background.get();
 		this.addComponent(Light).radius = 5;
+		this.addComponent(MoonFollower).camera = camera;
 	}
+}
 
-	public update(delta: number): void {
-		super.update(delta);
+class MoonFollower extends Component {
+	public camera: Transform | null = null;
 
-		this.transform.position.x = (this.camera.position.x - 3) / 3;
-		this.transform.position.y = (this.camera.position.y + 20) / 3;
+	public update(): void {
+		if (this.camera) {
+			this.transform.position.x = (this.camera.position.x - 3) / 3;
+			this.transform.position.y = (this.camera.position.y + 20) / 3;
+		}
 	}
 }

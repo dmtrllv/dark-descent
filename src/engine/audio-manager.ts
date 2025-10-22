@@ -6,6 +6,11 @@ import type { Scene } from "./scene";
 import { Vec2 } from "./vec";
 
 export class AudioManager {
+	private static readonly instance_ = new AudioManager();
+	public static readonly load = this.instance_.load.bind(this.instance_);
+	public static readonly play = this.instance_.play.bind(this.instance_);
+	public static readonly tick = this.instance_.update.bind(this.instance_);
+
 	private readonly _playingAudio: Audio[] = [];
 
 	public readonly load = async () => {

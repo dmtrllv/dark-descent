@@ -1,6 +1,7 @@
 Audio:
 	- min/max volume -> clamp when set
 	- prevent multiple audio sources to overlap when close to each other
+	- raycasting for obstacle detection
 
 Renderer:
 	- 2D normal mapping
@@ -20,6 +21,9 @@ Animator/Animation:
 	- create an animation from a sprite sheet
 	
 Game:
+	- Add min/max offset for target following
+	- Networking/multiplayer + offline mode
+
 	Abstractions:
 		- World and map creation
 

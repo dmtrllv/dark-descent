@@ -1,28 +1,26 @@
 import type { Component, ComponentType } from "./component";
-import type { Engine } from "./engine";
 import { GameObject } from "./game-object";
 import type { Vec2 } from "./vec";
 
 export abstract class Scene {
 	private readonly gameObjects: GameObject[] = [];
 
-	public readonly game: Engine;
-
 	public readonly components: Map<ComponentType<any>, Component[]> = new Map();
 
 	private _isLoaded: boolean = false;
 
-	public constructor(game: Engine) {
-		this.game = game;
-	}
+	public constructor() {}
 
 	public readonly getComponents = <T extends Component>(type: ComponentType<T>): T[] => {
 		return (this.components.get(type) || []) as T[];
 	}
 
-	public async load() {
+	public readonly load = async () => {
+		await this.onLoad();
 		this._isLoaded = true;
 	}
+
+	public async onLoad() {}
 	
 	public async start() {
 		for(const [_, c] of this.components) {
@@ -55,7 +53,7 @@ export abstract class Scene {
 			this.components.set(type, []);
 		}
 		const component = new type(gameObject);
-		component.init(this.game);
+		component.init();
 		this.components.get(type)?.push(component);
 		if(this._isLoaded)
 			component.start();
@@ -63,7 +61,7 @@ export abstract class Scene {
 	}
 
 	public update(delta: number) {
-		this.gameObjects.forEach(g => g.update(delta));
+		this.gameObjects.forEach(g => g.components.forEach(c => c.update(delta)));
 	}
 	
 }
