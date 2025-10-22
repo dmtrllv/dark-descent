@@ -16,5 +16,5 @@ export const serialized = <T extends SerializableType<any>>(name: string) => (Cl
 		}
 	}
 }
-
+// @ts-expect-error
 type SerializableType<T> = new (...args: any) => ISerializable<any>;
