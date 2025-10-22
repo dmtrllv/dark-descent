@@ -1,6 +1,8 @@
 import { AudioManager, Camera, Component, RegistryItem, Scene, Sprite, Vec2 } from "../engine";
 import { UI } from "../engine/gfx/ui";
+import { SceneManager } from "../engine/scene-manager";
 import { buttonBackground, buttonBackgroundHover, muteSprite, playOfflineTxt, playOnlineTxt, settingsTxt, unmuteSprite } from "../sprites";
+import { FirstScene } from "./first";
 
 export class StartMenu extends Scene {
 	private readonly addMenuButton = (txt: RegistryItem<Sprite>, position: Vec2, onClick: () => void) => {
@@ -11,6 +13,7 @@ export class StartMenu extends Scene {
 			hoverSprite: buttonBackgroundHover.get()
 		});
 	}
+	
 	public async onLoad() {
 		this.spawn().addComponent(Camera);
 
@@ -23,14 +26,16 @@ export class StartMenu extends Scene {
 
 	private readonly startOnline = () => {
 		console.log("startOnline");
+		SceneManager.load(FirstScene);
 	}
-
+	
 	private readonly openSettings = () => {
 		console.log("openSettings");
 	}
-
+	
 	private readonly startOffline = () => {
 		console.log("startOffline");
+		SceneManager.load(FirstScene);
 	}
 }
 

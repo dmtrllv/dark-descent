@@ -33,6 +33,13 @@ export abstract class Scene {
 		}
 	}
 
+	public readonly unload = async () => {
+		for (const [_, c] of this.components) {
+			c.forEach(c => c.onDestroy());
+		}
+		this.components.clear();
+	}
+
 	public async onLoad() { }
 
 	public async start() {

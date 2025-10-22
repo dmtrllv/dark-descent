@@ -33,8 +33,18 @@ export class SceneManager {
 		await s.load();
 	}
 
-	public readonly load = async <T extends Scene>(_Scene: SceneType<T>) => {
-		throw new Error("TODO: load scene");
+	public readonly load = async <T extends Scene>(type: SceneType<T>) => {
+		if (this._activeScene instanceof type) {
+			return;
+		}
+
+		if(this._activeScene) {
+			this._activeScene.unload();
+		}
+
+		const s = new type();
+		this._activeScene = s;
+		await s.load();
 	}
 }
 

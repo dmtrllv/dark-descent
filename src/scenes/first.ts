@@ -15,6 +15,7 @@ export class FirstScene extends Scene {
 	];
 
 	public async onLoad(): Promise<void> {
+		console.log("onload");
 		const camera = this.spawn().addComponent(Camera).addComponent(CamPlayerFollower);
 
 		this.spawn(Moon, camera.transform);

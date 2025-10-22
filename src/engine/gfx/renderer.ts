@@ -30,7 +30,7 @@ export class Renderer {
 		const gl = this.canvas.getContext("webgl2")!;
 		if (!gl)
 			throw new Error(`Could not get WebGL 2 context!`);
-		this.gl = gl; // TODO: check
+		this.gl = gl;
 
 		document.body.appendChild(this.canvas);
 		this.onResize();

@@ -23,4 +23,8 @@ export abstract class RenderComponent extends Component {
 	}
 
 	public abstract render(renderer: Renderer, material: Material): void;
+
+	public onDestroy(): void {
+		this._layer.remove(this);
+	}
 }
