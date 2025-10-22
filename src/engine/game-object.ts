@@ -1,5 +1,6 @@
-import type { Component, ComponentType } from "./component";
+import type { Component, ComponentProps, ComponentType } from "./component";
 import type { Scene } from "./scene";
+import { SceneManager } from "./scene-manager";
 import { Transform } from "./transform";
 
 export class GameObject {
@@ -7,14 +8,8 @@ export class GameObject {
 
 	public readonly components: Component[] = [];
 
-	public readonly scene: Scene;
-
-	public constructor(scene: Scene) {
-		this.scene = scene;
-	}
-
-	public readonly addComponent = <T extends Component>(type: ComponentType<T>) => {
-		const component = this.scene.createComponent(type, this);
+	public readonly addComponent = <T extends Component>(type: ComponentType<T>, props?: ComponentProps<T>) => {
+		const component = SceneManager.activeScene.createComponent(type, this, props);
 		this.components.push(component);
 		return component;
 	}
@@ -22,4 +17,6 @@ export class GameObject {
 	public readonly getComponent = <T extends Component>(type: ComponentType<T>): T | null => {
 		return (this.components.find(c => c.constructor === type) || null) as T | null;
 	}
+
+	public readonly spawn: Scene["spawn"] = (...args: any[]) => SceneManager.activeScene.spawn(...args);
 }

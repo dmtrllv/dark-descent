@@ -19,7 +19,6 @@ export class Audio {
 				res(a);
 			});
 			a.audio.onerror = (e) => {
-				console.log(e);
 				rej(new Error(`Could not load ${path}!`));
 			};
 		});

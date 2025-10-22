@@ -6,7 +6,7 @@ export abstract class Component {
 	public get transform(): Transform { return this.gameObject.transform; }
 	
 	public readonly getComponent: <T extends Component>(type: ComponentType<T>) => T | null;
-	public readonly addComponent: <T extends Component>(type: ComponentType<T>) => T;
+	public readonly addComponent: <T extends Component>(type: ComponentType<T>, props?: ComponentProps<T>) => T;
 	
 	public constructor(gameObject: GameObject) {
 		this.gameObject = gameObject;
@@ -20,3 +20,7 @@ export abstract class Component {
 }
 
 export type ComponentType<T extends Component> = new (gameObject: GameObject) => T;
+
+export type ComponentProps<T extends Component> = {
+	readonly [K in Exclude<keyof T, keyof Component>]?: T[K]
+};

@@ -15,7 +15,11 @@ export abstract class RenderComponent extends Component {
 	}
 
 	public set layer(layer: Layer) {
-		this._layer.move(this, layer);
+		if(this._layer) {
+			this._layer.move(this, layer);
+		} else {
+			layer.add(this);
+		}
 	}
 
 	public abstract render(renderer: Renderer, material: Material): void;

@@ -19,6 +19,7 @@ Physics:
 	
 GameObject:
 	- Add Tags -> use for queries
+	- Transform: parent <-> child
 
 Animator/Animation:
 	- create an animation from a sprite sheet
@@ -35,4 +36,4 @@ Game:
 		- World and map creation
 
 	Story:
-		- 
+		- ???

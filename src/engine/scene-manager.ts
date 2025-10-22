@@ -3,44 +3,35 @@ import type { Scene } from "./scene";
 export class SceneManager {
 	private static _instance: SceneManager = new SceneManager();
 
-	static get activeScene() { return this._instance._activeScene; };
+	static get activeScene() {
+		const s = this._instance._activeScene;;
+		if (!s)
+			throw new Error(`No scene is loaded!`);
+		return s;
+	};
+
 	public static readonly start = (scene: SceneType<any>) => this._instance.start(scene);
 	public static readonly load = (scene: SceneType<any>) => this._instance.load(scene);
 
 	private _activeScene: Scene | null = null;
-	private _loadingScene: string | null = null;
 
 	public get activeScene(): Scene | null {
 		return this._activeScene;
 	}
 
-	private constructor() {}
+	private constructor() { }
 
 	public async start(scene: SceneType<any>) {
 		if (this._activeScene !== null) {
 			throw new Error(`SceneManager is already initialized!`);
 		}
-		await this.load(scene);
+		const s = new scene();
+		this._activeScene = s;
+		await s.load();
 	}
 
-	public readonly load = async <T extends Scene>(Scene: SceneType<T>) => {
-		if (this._loadingScene !== null)
-			return
-
-		if (this._activeScene instanceof Scene && this._activeScene !== null)
-			return;
-
-		const scene = new Scene();
-
-		await scene.load();
-		scene["_isLoaded"] = true;
-
-		this._activeScene = scene;
-		this._loadingScene = null;
-
-		scene.start();
-
-		//await this.game.emit("scene-loaded", scene);
+	public readonly load = async <T extends Scene>(_Scene: SceneType<T>) => {
+		throw new Error("TODO: load scene");
 	}
 }
 

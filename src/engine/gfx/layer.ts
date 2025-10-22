@@ -23,7 +23,7 @@ export class Layer {
 		}
 	}
 
-	public move(component: RenderComponent, newLayer: Layer) {
+	public readonly move = (component: RenderComponent, newLayer: Layer) => {
 		this.remove(component);
 		newLayer.add(component);
 	}
