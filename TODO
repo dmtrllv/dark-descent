@@ -16,6 +16,7 @@ Renderer:
 Physics:
 	- Colission
 	- Ray shooting
+	- Optimize Collision -> check only when a Rigidbody is attached
 	
 GameObject:
 	- Add Tags -> use for queries

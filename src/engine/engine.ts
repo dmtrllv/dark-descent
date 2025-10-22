@@ -1,6 +1,7 @@
 import { Animation } from "./animation";
 import { AudioManager } from "./audio-manager";
 import { Renderer } from "./gfx/renderer";
+import { Input } from "./input";
 import { Physics } from "./physics";
 import type { Scene } from "./scene";
 import { SceneManager, type SceneType } from "./scene-manager";
@@ -8,9 +9,6 @@ import { Time } from "./time";
 
 export class Engine {
 	private readonly eventListeners: EventListeners = {};
-
-	private _totalTicks = 0;
-	private _lastTick = 0;
 
 	private _animationFrame: number | null = null;
 
@@ -22,10 +20,14 @@ export class Engine {
 	}
 
 	private readonly onActive = () => {
+		console.log("onActive");
+		this.resume();
 		this._isActive = true;
 	}
-
+	
 	private readonly onInactive = () => {
+		console.log("onInactive");
+		this.stop();
 		this._isActive = false;
 	}
 
@@ -48,33 +50,32 @@ export class Engine {
 		await Promise.all(listeners.map(l => l(...args)));
 	}
 
-	public readonly tick = (time: number) => {
-		const delta = time - this._lastTick;
-		Time.update(delta);
-		this._lastTick = time;
-
-		this._totalTicks++;
+	public readonly tick = () => {
+		if (!this._isActive)
+			return;
 
 		const scene = SceneManager.activeScene;
 		if (scene) {
-			if (this._isActive) {
-				scene.update();
-				Physics.update(scene);
-				AudioManager.tick(scene);
-			}
+			Time.tick();
+			scene.update();
+			Physics.update(scene);
+			AudioManager.tick(scene);
 			Renderer.render(scene);
+			Input.tick();
 		}
 
-		this._animationFrame = requestAnimationFrame(this.tick);
+		this._animationFrame = requestAnimationFrame(this.tick.bind(this));
 	}
 
 	private readonly resume = () => {
-		if (this._animationFrame === null)
-			this._animationFrame = requestAnimationFrame(this.tick);
+		if (this._animationFrame === null) {
+			this._animationFrame = requestAnimationFrame(this.tick.bind(this));
+			Time.resume();
+		}
 	}
 
 	public readonly stop = () => {
-		if (this._animationFrame) {
+		if (this._animationFrame !== null) {
 			cancelAnimationFrame(this._animationFrame);
 			this._animationFrame = null;
 		}

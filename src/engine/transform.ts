@@ -19,7 +19,6 @@ export class Transform {
 	public set position(position: Vec2) {
 		this._position.x = position.x;
 		this._position.y = position.y;
-		this._isDirty = true;
 	}
 
 	public set parent(parent: Transform | null) {

@@ -11,8 +11,8 @@ export abstract class Component {
 
 	public constructor(gameObject: GameObject) {
 		this.gameObject = gameObject;
-		this.getComponent = this.gameObject.getComponent;
-		this.addComponent = this.gameObject.addComponent;
+		this.getComponent = this.gameObject.getComponent.bind(this.gameObject);
+		this.addComponent = this.gameObject.addComponent.bind(this.gameObject);
 	}
 
 	public onInit() { }

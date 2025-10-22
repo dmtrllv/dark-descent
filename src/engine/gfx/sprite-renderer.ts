@@ -1,3 +1,4 @@
+import { Vec2 } from "../vec";
 import type { Material } from "./material";
 import { RenderComponent } from "./render-component";
 import { Renderer } from "./renderer";
@@ -6,6 +7,7 @@ import type { Sprite } from "./sprite";
 export class SpriteRenderer extends RenderComponent {
 	public sprite: Sprite | null = null;
 	private positionBuffer!: WebGLBuffer;
+	public flip: boolean = false;
 
 	public onInit(): void {
 		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
@@ -31,6 +33,7 @@ export class SpriteRenderer extends RenderComponent {
 		gl.enableVertexAttribArray(material.attributes.uv);
 
 		gl.uniform2fv(material.uniforms.position, this.transform.position.farray);
+		gl.uniform1i(material.uniforms.flip, +this.flip);
 
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.sprite.texture);

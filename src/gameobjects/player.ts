@@ -1,6 +1,8 @@
 import { Component, GameObject, Layer, Light, SpriteRenderer, Vec2, AudioListener, BoxCollider, Collider, Rigidbody } from "../engine";
+import { Input } from "../engine/input";
 
 import * as sprites from "../sprites";
+import { clamp } from "../utils";
 
 export class Player extends GameObject {
 	public constructor(position: Vec2 = new Vec2) {
@@ -27,72 +29,12 @@ export class Player extends GameObject {
 
 class InputHandler extends Component {
 	public readonly rb: Rigidbody;
+	public readonly renderer: SpriteRenderer;
 
 	public constructor(gameObject: GameObject) {
 		super(gameObject);
-		this.rb = this.gameObject.getComponent(Rigidbody)!;
-	}
-
-	public onStart(): void {
-		window.addEventListener("keydown", (e) => {
-			switch (e.key) {
-				case "a":
-					this.rb.velocity.x = -1;
-					break;
-				case "d":
-					this.rb.velocity.x = 1;
-					break;
-			}
-		});
-
-		let didJump = false;
-
-		window.addEventListener("keyup", (e) => {
-			switch (e.key) {
-				case "a":
-				case "d":
-					this.rb.velocity.x = 0;
-					break;
-				case " ":
-					didJump = false;
-					break;
-			}
-		});
-
-		window.addEventListener("keypress", (e) => {
-			if(didJump)
-				return;
-			
-			switch (e.key.toLowerCase()) {
-				case " ":
-					this.rb.velocity.y = 3;
-					didJump = true;
-					break
-			}
-		});
-
-		let isSliding = false;
-
-		let start = [0, 0];
-
-		window.addEventListener("touchstart", (e) => {
-			isSliding = true;
-			start = [e.touches[0]!.clientX, e.touches[0]!.clientY];
-		});
-
-		window.addEventListener("touchmove", (e) => {
-			if (!isSliding)
-				return;
-			const x = e.touches[0].clientX;
-			const y = e.touches[0].clientY;
-			const [sx, sy] = start;
-			this.rb.velocity = new Vec2(x - sx, -(y - sy)).normalize();
-		})
-
-		window.addEventListener("touchend", () => {
-			isSliding = false;
-			this.rb.velocity = new Vec2(0, 0);
-		});
+		this.rb = this.getComponent(Rigidbody)!;
+		this.renderer = this.getComponent(SpriteRenderer)!;
 	}
 
 	public onCollision(col: Collider): void {
@@ -100,5 +42,28 @@ class InputHandler extends Component {
 		const delta = (col.transform.position.y + col.top) - y;
 		this.transform.position.y += delta;
 		this.rb.velocity.y = 0;
+	}
+
+	public onUpdate(): void {
+		if (Input.isDown("a") && Input.isUp("d")) {
+			this.rb.velocity.x = -1;
+			this.renderer.flip = true;
+		} else if (Input.isUp("a") && Input.isDown("d")) {
+			this.rb.velocity.x = 1;
+			this.renderer.flip = false;
+		} else {
+			this.rb.velocity.x = 0;
+		}
+		if (Input.wentDown("space")) {
+			this.rb.velocity.y = 3;
+		}
+
+		if (this.transform.position.y < -3) {
+			this.rb.velocity.y = 0;
+			this.transform.position.y += 0.01;
+		} else {
+			this.transform.position.y = clamp(this.transform.position.y, -3, 10);
+
+		}
 	}
 }

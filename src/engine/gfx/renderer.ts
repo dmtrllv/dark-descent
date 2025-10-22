@@ -99,6 +99,7 @@ export class Renderer {
 	}
 
 	public render(scene: Scene) {
+		console.log("render");
 		const cameras = scene.getComponents(Camera);
 
 		if (cameras.length > 1) {

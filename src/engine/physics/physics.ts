@@ -1,12 +1,28 @@
 import type { Scene } from "../scene";
+import { Time } from "../time";
 import { Collider } from "./collider";
+import { Rigidbody } from "./rigidbody";
 
 export class Physics {
 	private static readonly _instance: Physics = new Physics();
 
 	public static readonly update = this._instance.update.bind(this._instance);
 
+	private lastOffset = 0;
+
 	public readonly update = (scene: Scene) => {
+		const iterations = (Time.delta / Time.fixedDelta) + this.lastOffset;
+		const t = iterations * Time.fixedDelta;
+		this.lastOffset = Time.delta - t;
+
+		for (let i = 0; i < iterations; i++) {
+			this.run(scene);
+		}
+	}
+
+	private readonly run = (scene: Scene) => {
+		scene.getComponents(Rigidbody).forEach(r => r.onFixedUpdate());
+		
 		const colliders = scene.getComponentsOfKind(Collider);
 		const collisions: [Collider, Collider][] = [];
 		for (let i = 0; i < colliders.length; i++) {

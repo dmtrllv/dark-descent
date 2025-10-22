@@ -1,5 +1,4 @@
 import type { Component, ComponentProps, ComponentType } from "./component";
-import type { Scene } from "./scene";
 import { SceneManager } from "./scene-manager";
 import { Transform } from "./transform";
 
