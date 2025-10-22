@@ -8,11 +8,11 @@ import type { Renderer } from "./renderer";
 export class SpriteRenderPass extends RenderPass {
 	private readonly material = Material.unlitSprite.get();
 
-	public render(renderer: Renderer, _scene: Scene, camera: Camera, delta: number) {
+	public render(renderer: Renderer, _scene: Scene, camera: Camera) {
 		this.target.render(renderer.gl, () => {
 			this.renderMaterial(renderer.gl, camera, this.material, () => {
 				Layer.registry.forEach((l) => {
-					l.render(renderer, this.material, delta);
+					l.render(renderer, this.material);
 				});
 			});
 		});

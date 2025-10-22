@@ -98,7 +98,7 @@ export class Renderer {
 		}
 	}
 
-	public render(scene: Scene, delta: number) {
+	public render(scene: Scene) {
 		const cameras = scene.getComponents(Camera);
 
 		if (cameras.length > 1) {
@@ -112,8 +112,8 @@ export class Renderer {
 		const lp = this.lightPass.get();
 		const sp = this.spritePass.get();
 
-		lp.render(this, scene, camera, delta);
-		sp.render(this, scene, camera, delta);
+		lp.render(this, scene, camera);
+		sp.render(this, scene, camera);
 
 		renderMergedPasses(this, this.size, lp.target.targetTexture, sp.target.targetTexture);
 	}

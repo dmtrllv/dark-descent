@@ -16,7 +16,7 @@ export abstract class Component {
 
 	public init() {}
 	public start() {}
-	public update(_delta: number) {}
+	public update() {}
 }
 
 export type ComponentType<T extends Component> = new (gameObject: GameObject) => T;

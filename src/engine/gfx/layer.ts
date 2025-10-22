@@ -28,8 +28,8 @@ export class Layer {
 		newLayer.add(component);
 	}
 
-	public readonly render = (renderer: Renderer, material: Material, delta: number) => {
-		this._renderComponents.forEach(c => c.render(renderer, material, delta));
+	public readonly render = (renderer: Renderer, material: Material) => {
+		this._renderComponents.forEach(c => c.render(renderer, material));
 	}
 
 	public static registry = new Registry<Layer>();

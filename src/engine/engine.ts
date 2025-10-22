@@ -3,6 +3,7 @@ import { AudioManager } from "./audio-manager";
 import { Renderer } from "./gfx/renderer";
 import type { Scene } from "./scene";
 import { SceneManager, type SceneType } from "./scene-manager";
+import { Time } from "./time";
 
 export class Engine {
 	private readonly eventListeners: EventListeners = {};
@@ -48,6 +49,7 @@ export class Engine {
 
 	public readonly tick = (time: number) => {
 		const delta = time - this._lastTick;
+		Time.update(delta);
 		this._lastTick = time;
 
 		this._totalTicks++;
@@ -56,10 +58,10 @@ export class Engine {
 		const scene = SceneManager.activeScene;
 		if (scene) {
 			if (this._isActive) {
-				scene.update(d);
+				scene.update();
 				AudioManager.tick(scene);
 			}
-			Renderer.render(scene, d);
+			Renderer.render(scene);
 		}
 
 		this._animationFrame = requestAnimationFrame(this.tick);

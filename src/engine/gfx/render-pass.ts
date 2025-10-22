@@ -25,5 +25,5 @@ export abstract class RenderPass {
 		callback();
 	}
 
-	public abstract render(renderer: Renderer, scene: Scene, camera: Camera, delta: number): void;
+	public abstract render(renderer: Renderer, scene: Scene, camera: Camera): void;
 }

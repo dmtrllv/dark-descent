@@ -18,5 +18,5 @@ export abstract class RenderComponent extends Component {
 		this._layer.move(this, layer);
 	}
 
-	public abstract render(renderer: Renderer, material: Material, delta: number): void;
+	public abstract render(renderer: Renderer, material: Material): void;
 }

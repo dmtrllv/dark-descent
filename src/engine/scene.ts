@@ -60,8 +60,8 @@ export abstract class Scene {
 		return component;
 	}
 
-	public update(delta: number) {
-		this.gameObjects.forEach(g => g.components.forEach(c => c.update(delta)));
+	public update() {
+		this.gameObjects.forEach(g => g.components.forEach(c => c.update()));
 	}
 	
 }

@@ -5,6 +5,7 @@ import { fireAnimation } from "../animations";
 import { bird1, bird2, bird3, fireCrackles } from "../audio";
 import { AudioEmitter } from "../engine/audio-emitter";
 import { AudioListener } from "../engine/audio-listener";
+import { Time } from "../engine/time";
 
 export class FirstScene extends Scene {
 	public async onLoad(): Promise<void> {
@@ -82,7 +83,7 @@ class LightTest extends GameObject {
 class Follower extends Component {
 	public target: Transform | null = null;
 
-	public update(_delta: number): void {
+	public update(): void {
 		if (!this.target)
 			return;
 
@@ -99,8 +100,8 @@ class Follower extends Component {
 			offsetY = 0;
 		}
 
-		const x = (offsetX * (_delta / 2));
-		const y = (offsetY * (_delta / 2));
+		const x = (offsetX * (Time.delta / 2));
+		const y = (offsetY * (Time.delta / 2));
 
 		const px = this.transform.position.x;
 		const py = this.transform.position.y;
@@ -170,8 +171,8 @@ class Movable extends Component {
 		});
 	}
 
-	public update(delta: number): void {
-		this.transform.position.add(Vec2.scale(this.v, delta * 3))
+	public update(): void {
+		this.transform.position.add(Vec2.scale(this.v, Time.delta * 3))
 	}
 }
 
