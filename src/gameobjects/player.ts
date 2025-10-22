@@ -32,10 +32,50 @@ class InputHandler extends Component {
 	public readonly renderer: SpriteRenderer;
 	public readonly speed: number = 0.7;
 
+	private isSliding = false;
 	public constructor(gameObject: GameObject) {
 		super(gameObject);
 		this.rb = this.getComponent(Rigidbody)!;
 		this.renderer = this.getComponent(SpriteRenderer)!;
+
+		let didJump = false;
+
+		let downPos = new Vec2(0, 0);
+
+		window.addEventListener("touchstart", (e) => {
+			const { clientX, clientY } = e.touches[0]!;
+			this.isSliding = true;
+			downPos = new Vec2(clientX, clientY);
+		});
+
+		window.addEventListener("touchmove", (e) => {
+			if (!this.isSliding)
+				return;
+
+			const { clientX, clientY } = e.touches[0]!;
+			const p = new Vec2(clientX, clientY);
+
+			const offset = p.sub(downPos);
+			if (offset.x > 0) {
+				this.rb.velocity.x = 1 * this.speed;
+				this.renderer.flip = false;
+			} else if (offset.x < 0) {
+				this.rb.velocity.x = -1 * this.speed;
+				this.renderer.flip = true;
+			}
+
+			if (offset.y < 0 && !didJump) {
+				this.rb.velocity.y = 3;
+				didJump = true;
+				setTimeout(() => {
+					didJump = false;
+				}, 400);
+			}
+		});
+
+		window.addEventListener("touchend", () => {
+			this.isSliding = false;
+		})
 	}
 
 	public onCollision(col: Collider): void {
@@ -46,17 +86,19 @@ class InputHandler extends Component {
 	}
 
 	public onUpdate(): void {
-		if (Input.isDown("a") && Input.isUp("d")) {
-			this.rb.velocity.x = -1 * this.speed;
-			this.renderer.flip = true;
-		} else if (Input.isUp("a") && Input.isDown("d")) {
-			this.rb.velocity.x = 1 * this.speed;
-			this.renderer.flip = false;
-		} else {
-			this.rb.velocity.x = 0;
-		}
-		if (Input.wentDown("space")) {
-			this.rb.velocity.y = 3;
+		if (!this.isSliding) {
+			if (Input.isDown("a") && Input.isUp("d")) {
+				this.rb.velocity.x = -1 * this.speed;
+				this.renderer.flip = true;
+			} else if (Input.isUp("a") && Input.isDown("d")) {
+				this.rb.velocity.x = 1 * this.speed;
+				this.renderer.flip = false;
+			} else {
+				this.rb.velocity.x = 0;
+			}
+			if (Input.wentDown("space")) {
+				this.rb.velocity.y = 3;
+			}
 		}
 
 		if (this.transform.position.y < -3) {
