@@ -1,4 +1,3 @@
-import { Vec2 } from "../vec";
 import type { Material } from "./material";
 import { RenderComponent } from "./render-component";
 import { Renderer } from "./renderer";

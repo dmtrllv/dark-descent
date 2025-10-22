@@ -1,6 +1,6 @@
 import { Scene, Camera, Vec2 } from "../engine";
 
-import { Map, Moon, Player } from "../gameobjects";
+import { Fire, Map, Moon, Player } from "../gameobjects";
 import { CamPlayerFollower } from "../components";
 
 import * as sprites from "../sprites";
@@ -24,20 +24,35 @@ export class FirstScene extends Scene {
 			platforms: [
 				{
 					background: sprites.platform,
-					position: new Vec2(0, -1)
+					position: new Vec2(-3, -0.8)
 				},
 				{
 					background: sprites.platform,
-					position: new Vec2(4, -1)
+					position: new Vec2(0, -0.8)
 				},
 				{
 					background: sprites.platform,
-					position: new Vec2(8, -1)
+					position: new Vec2(3, -1)
+				},
+				{
+					background: sprites.platform,
+					position: new Vec2(6, -0.8)
+				},
+				{
+					background: sprites.platform,
+					position: new Vec2(9, -0.8)
+				},
+				{
+					background: sprites.platform,
+					position: new Vec2(12, -0.8)
 				}
 			],
 		});
 
 		camera.target = this.spawn(Player, new Vec2(0, 2)).transform;
+
+		this.spawn(Fire, new Vec2(-3, -0.4));
+		this.spawn(Fire, new Vec2(12, -0.4));
 
 		this.playBirds();
 	}

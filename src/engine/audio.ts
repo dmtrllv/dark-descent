@@ -18,7 +18,7 @@ export class Audio {
 			a.audio.addEventListener("canplaythrough", () => {
 				res(a);
 			});
-			a.audio.onerror = (e) => {
+			a.audio.onerror = () => {
 				rej(new Error(`Could not load ${path}!`));
 			};
 		});
