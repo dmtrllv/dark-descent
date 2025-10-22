@@ -30,6 +30,7 @@ export class Player extends GameObject {
 class InputHandler extends Component {
 	public readonly rb: Rigidbody;
 	public readonly renderer: SpriteRenderer;
+	public readonly speed: number = 0.7;
 
 	public constructor(gameObject: GameObject) {
 		super(gameObject);
@@ -46,10 +47,10 @@ class InputHandler extends Component {
 
 	public onUpdate(): void {
 		if (Input.isDown("a") && Input.isUp("d")) {
-			this.rb.velocity.x = -1;
+			this.rb.velocity.x = -1 * this.speed;
 			this.renderer.flip = true;
 		} else if (Input.isUp("a") && Input.isDown("d")) {
-			this.rb.velocity.x = 1;
+			this.rb.velocity.x = 1 * this.speed;
 			this.renderer.flip = false;
 		} else {
 			this.rb.velocity.x = 0;
@@ -63,7 +64,6 @@ class InputHandler extends Component {
 			this.transform.position.y += 0.01;
 		} else {
 			this.transform.position.y = clamp(this.transform.position.y, -3, 10);
-
 		}
 	}
 }

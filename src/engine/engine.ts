@@ -20,13 +20,11 @@ export class Engine {
 	}
 
 	private readonly onActive = () => {
-		console.log("onActive");
 		this.resume();
 		this._isActive = true;
 	}
 	
 	private readonly onInactive = () => {
-		console.log("onInactive");
 		this.stop();
 		this._isActive = false;
 	}
