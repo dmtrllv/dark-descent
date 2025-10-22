@@ -1,4 +1,9 @@
 export class Vec2 {
+	static distance(a: Vec2, b: Vec2) {
+		const x = a.x - b.x;
+		const y = a.y - b.y;
+		return Math.sqrt((x ** 2) + (y ** 2));
+	}
 	static scale(v: Vec2, delta: number): Vec2 {
 		return new Vec2(v.x * delta, v.y * delta);
 	}

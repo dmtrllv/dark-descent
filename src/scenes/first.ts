@@ -3,12 +3,14 @@ import { ShadowCaster, Scene, Camera, Vec2, SpriteRenderer, Layer, Color, GameOb
 import * as sprites from "../sprites";
 import * as songs from "../songs";
 import { fireAnimation } from "../animations";
-import { fireCrackles } from "../audio";
+import { bird1, bird2, bird3, fireCrackles } from "../audio";
+import { AudioEmitter } from "../engine/audio-emitter";
+import { AudioListener } from "../engine/audio-listener";
 
 export class FirstScene extends Scene {
 	public async load(): Promise<void> {
 		const c = this.spawn().addComponent(Camera);
-		const f = c.gameObject.addComponent(Follower);
+		const follow = c.gameObject.addComponent(Follower);
 
 		// set background
 		const background = this.spawn(new Vec2(0, -3)).addComponent(SpriteRenderer);
@@ -21,37 +23,35 @@ export class FirstScene extends Scene {
 			this.spawn(Platform, sprites.platform, new Vec2(i * 3, 4 + Math.cos(i)));
 		}
 
-		// spawn main light
-		const l = this.spawn(LightTest);
-		l.addComponent(Movable);
+		// spawn main light and set camera follow target
+		follow.target = this.spawn(LightTest).transform;
 
-		f.target = l.transform;
+		this.spawn(Fire, new Vec2(-7, -1.3));
+		this.spawn(Fire, new Vec2(5, 4));
 
-		// add a 2nd redish light
-		this.spawn(LightTest, new Vec2(6, 4), new Color(1, 0.7, 0.7, 1), 6);
+		songs.intro.get().repeat();
+		
+		const birds = [
+			bird1.get(),
+			bird2.get(),
+			bird3.get(),
+		];
 
-		window.addEventListener("mousemove", (e) => {
-			l.transform.position = c.screenToWorld(new Vec2(e.clientX, e.clientY));
-		});
+		const playBirds = () => {
+			const bird = birds[Math.round(Math.random() * 2)];
+			if(!bird) {
+				return playBirds();
+			}
 
-		songs.intro2.get().play().then(() => { });
+			bird.play().then(() => {
+				bird["audio"].volume = Math.random();
+				setTimeout(() => {
+					playBirds();
+				}, Math.random() * 16000);
+			});
+		};
 
-		const fire = fireCrackles.get();
-
-		const playFire = () => {
-			console.log("play");
-			fire.play();
-			setTimeout(() => {
-				playFire()
-			}, (fire["audio"].duration * 1000) - 200);
-		}
-
-		playFire();
-
-		const r = this.spawn(new Vec2(0, 0.5)).addComponent(SpriteRenderer);
-		r.layer = Layer.map.get();
-		r.gameObject.addComponent(Light).radius = 2;
-		r.gameObject.addComponent(Animator).animation = fireAnimation.get();
+		playBirds();
 	}
 }
 
@@ -75,6 +75,8 @@ class LightTest extends GameObject {
 		l.radius = radius; const r = this.addComponent(SpriteRenderer);
 		r.sprite = sprites.light.get();
 		r.layer = Layer.map.get();
+		this.addComponent(Movable);
+		this.addComponent(AudioListener);
 	}
 }
 
@@ -148,5 +150,30 @@ class Movable extends Component {
 
 	public update(delta: number): void {
 		this.transform.position.add(Vec2.scale(this.v, delta * 3))
+	}
+}
+
+class Fire extends GameObject {
+	public constructor(scene: Scene, position: Vec2 = new Vec2()) {
+		super(scene);
+		this.transform.position = position;
+		const r = this.addComponent(SpriteRenderer);
+
+		r.layer = Layer.map.get();
+		this.addComponent(Light).radius = 3;
+
+		const animator = this.addComponent(Animator);
+		animator.animation = fireAnimation.get();
+		animator.offset = Math.random() * 1000;
+
+		const audioEmitter = this.addComponent(AudioEmitter);
+		audioEmitter.audio = fireCrackles.get().clone();
+		audioEmitter.audio.repeat(Math.random() * 6000, 100);
+	}
+
+	public update(delta: number): void {
+		super.update(delta);
+		if (Math.random() > 0.7)
+			this.getComponent(Light)!.intensity = (Math.random() * 0.15) + 0.82;
 	}
 }

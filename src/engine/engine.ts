@@ -52,8 +52,10 @@ export class Engine {
 
 		const scene = this.sceneManager.activeScene;
 		if (scene) {
-			if (this._active)
+			if (this._active) {
 				scene.update(d);
+				this.audioManager.update(scene);
+			}
 			this.renderer.render(scene, d);
 		}
 
