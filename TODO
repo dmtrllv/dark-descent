@@ -1,0 +1,27 @@
+Audio:
+	- min/max volume -> clamp when set
+	- prevent multiple audio sources to overlap when close to each other
+
+Renderer:
+	- 2D normal mapping
+	- Shadow render pass
+	- UI
+	
+	performance: 
+		- add uniform object buffers
+		- add vertex objects
+		- instanced rendering
+
+Physics:
+	- Colission
+	- Ray shooting
+	
+Animator/Animation:
+	- create an animation from a sprite sheet
+	
+Game:
+	Abstractions:
+		- World and map creation
+
+	Story:
+		- 

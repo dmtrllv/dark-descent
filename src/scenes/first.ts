@@ -1,7 +1,6 @@
 import { ShadowCaster, Scene, Camera, Vec2, SpriteRenderer, Layer, Color, GameObject, RegistryItem, Sprite, Light, Component, Transform, Animator } from "../engine";
 
 import * as sprites from "../sprites";
-import * as songs from "../songs";
 import { fireAnimation } from "../animations";
 import { bird1, bird2, bird3, fireCrackles } from "../audio";
 import { AudioEmitter } from "../engine/audio-emitter";
@@ -12,7 +11,9 @@ export class FirstScene extends Scene {
 		const c = this.spawn().addComponent(Camera);
 		const follow = c.gameObject.addComponent(Follower);
 
-		// set background
+		// set background and moon
+		this.spawn(Moon, c.transform, new Vec2(-3, 7));
+
 		const background = this.spawn(new Vec2(0, -3)).addComponent(SpriteRenderer);
 		background.sprite = sprites.background.get();
 		background.layer = Layer.background.get();
@@ -29,8 +30,6 @@ export class FirstScene extends Scene {
 		this.spawn(Fire, new Vec2(-7, -1.3));
 		this.spawn(Fire, new Vec2(5, 4));
 
-		songs.intro.get().repeat();
-		
 		const birds = [
 			bird1.get(),
 			bird2.get(),
@@ -39,7 +38,7 @@ export class FirstScene extends Scene {
 
 		const playBirds = () => {
 			const bird = birds[Math.round(Math.random() * 2)];
-			if(!bird) {
+			if (!bird) {
 				return playBirds();
 			}
 
@@ -175,5 +174,27 @@ class Fire extends GameObject {
 		super.update(delta);
 		if (Math.random() > 0.7)
 			this.getComponent(Light)!.intensity = (Math.random() * 0.15) + 0.82;
+	}
+}
+
+class Moon extends GameObject {
+	public readonly camera: Transform;
+
+	public constructor(scene: Scene, camera: Transform, position: Vec2 = new Vec2()) {
+		super(scene);
+		this.camera = camera;
+		this.transform.position = position;
+
+		const r = this.addComponent(SpriteRenderer);
+		r.sprite = sprites.moon.get();
+		r.layer = Layer.background.get();
+		this.addComponent(Light).radius = 5;
+	}
+
+	public update(delta: number): void {
+		super.update(delta);
+
+		this.transform.position.x = (this.camera.position.x - 3) / 3;
+		this.transform.position.y = (this.camera.position.y + 20) / 3;
 	}
 }

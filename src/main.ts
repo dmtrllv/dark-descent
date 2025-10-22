@@ -1,4 +1,5 @@
 import { Engine } from "./engine/engine";
+import { playMusic } from "./music-player";
 import { FirstScene } from "./scenes";
 
 const start = async () => {
@@ -9,7 +10,7 @@ const start = async () => {
 
 	const game = new Engine();
 	await game.start(FirstScene);
-
+	playMusic();
 }
 
 const startBtn = document.querySelector("div")!;

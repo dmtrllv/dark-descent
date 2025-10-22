@@ -25,8 +25,8 @@ export class Audio {
 		});
 	});
 
-	public readonly play = (oneShot: boolean = true): Promise<void> => {
-		this.manager.play(this, oneShot);
+	public readonly play = (): Promise<void> => {
+		this.manager.play(this, true);
 		return new Promise((res) => {
 			this.audio.onended = () => res();
 		});

@@ -4,6 +4,7 @@ export const platform = Sprite.register("/sprites/platform.bmp");
 export const platform2 = Sprite.register("/sprites/platform-2.bmp");
 export const light = Sprite.register("/sprites/light.bmp");
 export const background = Sprite.register("/sprites/background.bmp");
+export const moon = Sprite.register("/sprites/moon.bmp");
 
 export const fire1 = Sprite.register("/sprites/fire-1.bmp");
 export const fire2 = Sprite.register("/sprites/fire-2.bmp");
