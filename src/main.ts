@@ -1,6 +1,6 @@
 import { Engine } from "./engine/engine";
 import { playMusic } from "./music-player";
-import { FirstScene } from "./scenes";
+import { StartMenu } from "./scenes/game-menu";
 
 const start = async () => {
 	window.removeEventListener("keypress", start);
@@ -9,7 +9,7 @@ const start = async () => {
 	startBtn.remove();
 
 	const game = new Engine();
-	await game.start(FirstScene);
+	await game.start(StartMenu);
 	playMusic();
 }
 

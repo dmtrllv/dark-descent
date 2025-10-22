@@ -17,3 +17,13 @@ export const fire5 = Sprite.register("/sprites/fire-5.bmp");
 export const fire6 = Sprite.register("/sprites/fire-6.bmp");
 
 export const player = Sprite.register("/sprites/player-test.bmp");
+
+export const buttonBackground = Sprite.register("/sprites/menu-button.bmp");
+export const buttonBackgroundHover = Sprite.register("/sprites/menu-button-hover.bmp");
+export const playOnlineTxt = Sprite.register("/sprites/play-online-txt.bmp");
+export const playOfflineTxt = Sprite.register("/sprites/play-offline-txt.bmp");
+export const settingsTxt = Sprite.register("/sprites/settings-txt.bmp");
+
+export const muteSprite = Sprite.register("/sprites/mute.bmp");
+export const unmuteSprite = Sprite.register("/sprites/unmute.bmp");
+

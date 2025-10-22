@@ -1,5 +1,6 @@
 import { Registry } from "../registry";
 import type { Scene } from "../scene";
+import { SceneManager } from "../scene-manager";
 import { Vec2 } from "../vec";
 import { Camera } from "./camera";
 import { Layer } from "./layer";
@@ -10,6 +11,7 @@ import type { RenderPass } from "./render-pass";
 import { Shader } from "./shader";
 import { Sprite } from "./sprite";
 import { SpriteRenderPass } from "./sprite-render-pass";
+import { UI } from "./ui";
 
 export class Renderer {
 	private static readonly _instance = new Renderer();
@@ -26,7 +28,7 @@ export class Renderer {
 	private constructor() {
 		this.canvas = document.createElement("canvas");
 		const gl = this.canvas.getContext("webgl2")!;
-		if(!gl)
+		if (!gl)
 			throw new Error(`Could not get WebGL 2 context!`);
 		this.gl = gl; // TODO: check
 
@@ -96,6 +98,10 @@ export class Renderer {
 				item.target.resize(this.gl, newSize);
 			});
 		}
+
+		if(SceneManager.hasActiveScene) {
+			this.render(SceneManager.activeScene);
+		}
 	}
 
 	public render(scene: Scene) {
@@ -116,6 +122,19 @@ export class Renderer {
 		sp.render(this, scene, camera);
 
 		renderMergedPasses(this, this.size, lp.target.targetTexture, sp.target.targetTexture);
+
+		this.renderUI(camera, scene);
+	}
+
+	private renderUI(camera: Camera, scene: Scene) {
+		const material = Material.unlitSprite.get();
+		const gl = this.gl;
+
+		gl.useProgram(material.program);
+		camera.useUniforms(gl, material);
+		gl.uniform2fv(material.uniforms.screenResolution, [this.canvas.width, this.canvas.height]);
+		
+		scene.getComponents(UI).forEach(ui => ui.render(this, material));
 	}
 
 	public createArrayBuffer(data: number[]) {

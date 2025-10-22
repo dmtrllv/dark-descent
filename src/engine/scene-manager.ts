@@ -2,6 +2,9 @@ import type { Scene } from "./scene";
 
 export class SceneManager {
 	private static _instance: SceneManager = new SceneManager();
+	public static get hasActiveScene(): boolean {
+		return this._instance._activeScene !== null;
+	}
 
 	static get activeScene() {
 		const s = this._instance._activeScene;;

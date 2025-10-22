@@ -1,4 +1,10 @@
+import { Vec2 } from "./vec";
+
 export class Input {
+	public static get mouse() {
+		return this._instance._mouse;
+	}
+
 	private static readonly _instance = new Input();
 
 	public static readonly isDown = this._instance.isDown.bind(this._instance);
@@ -12,8 +18,14 @@ export class Input {
 	private readonly _down = new Set<string>();
 	private readonly _wentDown = new Set<string>();
 	private readonly _wentUp = new Set<string>();
+	private readonly _mouse = new Vec2();
 
 	private constructor() {
+		window.addEventListener("mousemove", (e) => {
+			this._mouse.x = e.clientX;
+			this._mouse.y = e.clientY;
+		});
+
 		window.addEventListener("keydown", (e) => {
 			const k = e.key.toLowerCase();
 			switch (k) {

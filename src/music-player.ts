@@ -5,7 +5,7 @@ let current = Math.round(Math.random());
 const songs = [
 	intro,
 	intro2,
-]
+];
 
 export const playMusic = () => {
 	const song = songs[current % songs.length];
