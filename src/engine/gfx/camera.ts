@@ -3,7 +3,7 @@ import { Vec2 } from "../vec";
 import type { Material } from "./material";
 
 export class Camera extends Component {
-	public zoom: number = (navigator as any).userAgentData.mobile ? 4 : 8;
+	public zoom: number = ((navigator as any).userAgentData?.mobile || window.innerWidth < 400) ? 4 : 8;
 	public ambientOcclusion: number = 1;
 	public pixelsPerUnit: number = 16;
 
