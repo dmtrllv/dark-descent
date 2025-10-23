@@ -1,8 +1,8 @@
 import { MuteBtn } from "../components/mute-btn";
-import { AudioManager, Camera, Component, RegistryItem, Scene, Sprite, Vec2 } from "../engine";
+import { Camera, RegistryItem, Scene, Sprite, Vec2 } from "../engine";
 import { UI } from "../engine/gfx/ui";
 import { SceneManager } from "../engine/scene-manager";
-import { buttonBackground, buttonBackgroundHover, muteSprite, playOfflineTxt, playOnlineTxt, settingsTxt, unmuteSprite } from "../sprites";
+import { buttonBackground, buttonBackgroundHover, playOfflineTxt, playOnlineTxt, settingsTxt } from "../sprites";
 import { FirstScene } from "./first";
 
 export class StartMenu extends Scene {
@@ -26,7 +26,7 @@ export class StartMenu extends Scene {
 	}
 
 	private readonly startOnline = () => {
-		console.log("startOnline");
+		FirstScene.online = true;
 		SceneManager.load(FirstScene);
 	}
 	
@@ -35,7 +35,7 @@ export class StartMenu extends Scene {
 	}
 	
 	private readonly startOffline = () => {
-		console.log("startOffline");
+		FirstScene.online = false;
 		SceneManager.load(FirstScene);
 	}
 }

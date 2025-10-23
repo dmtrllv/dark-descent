@@ -1,14 +1,18 @@
-import { Scene, Camera, Vec2 } from "../engine";
+import { Scene, Camera, Vec2, SpriteRenderer } from "../engine";
 
-import { Fire, Map, Moon, Player } from "../gameobjects";
-import { CamPlayerFollower } from "../components";
+import { Fire, Map, Moon, NetworkPlayer, Player } from "../gameobjects";
+import { CamPlayerFollower, SettingsPanel } from "../components";
 
 import * as sprites from "../sprites";
 import { bird1, bird2, bird3 } from "../audio";
 import { MuteBtn } from "../components/mute-btn";
-
+import { io, Socket } from "socket.io-client";
 
 export class FirstScene extends Scene {
+	public static online: boolean = false;
+
+	private players: Record<string, NetworkPlayer> = {};
+
 	private readonly birdsSounds = [
 		bird1.get(),
 		bird2.get(),
@@ -50,14 +54,51 @@ export class FirstScene extends Scene {
 			],
 		});
 
-		camera.target = this.spawn(Player, new Vec2(0, 2)).transform;
+		let socket: Socket | null = null;
+		if (FirstScene.online) {
+			socket = io();
+
+
+			await new Promise<void>((res) => {
+				socket!.emit("get-current-players");
+				socket!.on("current-players", (players) => {
+					for (const k in players) {
+						const { x, y } = players[k];
+						const p = this.spawn(NetworkPlayer, new Vec2(x, y));
+						this.players[k] = p as NetworkPlayer;
+					}
+					res();
+				});
+			});
+		}
+
+		camera.target = this.spawn(Player, new Vec2(0, 2), socket).transform;
 
 		this.spawn(Fire, new Vec2(-3, -0.4));
 		this.spawn(Fire, new Vec2(12, -0.4));
 
+		this.spawn().addComponent(SettingsPanel);
 		this.spawn(new Vec2(-1, 1)).addComponent(MuteBtn);
 
 		this.playBirds();
+
+		if (FirstScene.online) {
+			socket!.on("player-connected", k => {
+				this.players[k] = this.spawn(NetworkPlayer) as NetworkPlayer;
+			});
+
+			socket!.on("player-disconnected", (k) => {
+				console.log("delete", k, this.players[k]);
+				this.players[k].destroy();
+				delete this.players[k];
+			});
+
+			socket!.on("player-update", (id, pos) => {
+				const x = this.players[id].transform.position.x;
+				this.players[id].transform.position = new Vec2(pos.x, pos.y);
+				this.players[id].getComponent(SpriteRenderer)!.flip = pos.x < x;
+			});
+		}
 	}
 
 	private playBirds() {

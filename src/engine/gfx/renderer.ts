@@ -1,9 +1,9 @@
 import { Registry } from "../registry";
-import type { Scene } from "../scene";
+import { Scene } from "../scene";
 import { SceneManager } from "../scene-manager";
 import { Vec2 } from "../vec";
 import { Camera } from "./camera";
-import { Layer } from "./layer";
+//import { Layer } from "./layer";
 import { LightPass } from "./light-render-pass";
 import { Material } from "./material";
 import { renderMergedPasses } from "./merge-pass";
@@ -77,7 +77,7 @@ export class Renderer {
 		await Shader.registry.load(this);
 		await Material.registry.load(this);
 		await Sprite.registry.load(this);
-		await Layer.registry.load();
+		//await Layer.registry.load();
 		await this.passRegistry.load();
 	}
 
@@ -105,6 +105,9 @@ export class Renderer {
 	}
 
 	public render(scene: Scene) {
+		if(SceneManager.isLoading)
+			return;
+		
 		const cameras = scene.getComponents(Camera);
 
 		if (cameras.length > 1) {

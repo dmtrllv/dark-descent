@@ -1,4 +1,4 @@
-import { GameObject, Layer, RegistryItem, Sprite, SpriteRenderer, Vec2 } from "../engine";
+import { GameObject, RegistryItem, Sprite, SpriteRenderer, Vec2 } from "../engine";
 import { SceneManager } from "../engine/scene-manager";
 import { Platform } from "./platform";
 
@@ -8,11 +8,8 @@ export class Map extends GameObject {
 
 		const scene = SceneManager.activeScene;
 
-		const bg = Layer.background.get();
-
 		backgrounds.forEach(b => {
 			scene.spawn().addComponent(SpriteRenderer, {
-				layer: bg,
 				sprite: b.get()
 			});
 		});

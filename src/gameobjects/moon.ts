@@ -1,4 +1,4 @@
-import { GameObject, Transform, Vec2, SpriteRenderer, Layer, Light, Component } from "../engine";
+import { GameObject, Transform, Vec2, SpriteRenderer, Light, Component } from "../engine";
 
 import * as sprites from "../sprites";
 
@@ -8,7 +8,6 @@ export class Moon extends GameObject {
 		this.transform.position = position;
 		this.addComponent(SpriteRenderer, {
 			sprite: sprites.moon.get(),
-			layer: Layer.background.get(),
 		});
 		this.addComponent(Light, { radius: 5 });
 		this.addComponent(MoonFollower, { camera });

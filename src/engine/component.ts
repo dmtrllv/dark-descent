@@ -21,7 +21,9 @@ export abstract class Component {
 
 	public onCollision(_col: Collider) {}
 	
-	public onDestroy(): void {}
+	public onDestroy(): void {
+		console.log("onDestroy", this);
+	}
 	
 }
 

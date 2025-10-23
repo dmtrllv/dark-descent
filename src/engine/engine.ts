@@ -20,13 +20,13 @@ export class Engine {
 	}
 
 	private readonly onActive = () => {
-		this.resume();
-		this._isActive = true;
+		//this.resume();
+		//this._isActive = true;
 	}
 	
 	private readonly onInactive = () => {
-		this.stop();
-		this._isActive = false;
+		//this.stop();
+		//this._isActive = false;
 	}
 
 	public async start(scene: SceneType<any>) {

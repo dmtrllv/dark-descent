@@ -8,6 +8,7 @@ import { Renderer } from "./renderer";
 import type { Sprite } from "./sprite";
 
 export class UI extends RenderComponent {
+	public hidden: boolean = false;
 	public sprite: Sprite | null = null;
 	public background: Sprite | null = null;
 	public hoverSprite: Sprite | null = null;
@@ -33,6 +34,9 @@ export class UI extends RenderComponent {
 	}
 
 	public render(renderer: Renderer, material: Material) {
+		if(this.hidden)
+			return;
+		
 		const b = this.isHovering() ? this.hoverSprite || this.background : this.background;
 
 		if (!this.sprite)

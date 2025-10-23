@@ -3,13 +3,25 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"main": "./dist/index.js",
 	"scripts": {
-		"dev": "vite --host",
-		"build": "tsc && vite build",
-		"preview": "vite preview"
+		"watch-client": "vite build --watch",
+		"watch-server": "tsc -p tsconfig.server.json --watch",
+		"build-client": "tsc && vite build",
+		"build-server": "tsc -p tsconfig.server.json",
+		"build": "npm run build-server && npm run build-client"
 	},
 	"devDependencies": {
+		"@types/express": "^5.0.3",
+		"@types/node": "^24.9.1",
+		"@types/socket.io": "^3.0.1",
+		"@types/socket.io-client": "^1.4.36",
 		"typescript": "~5.9.3",
-		"vite": "^7.1.7"
+		"vite": "^7.1.11"
+	},
+	"dependencies": {
+		"express": "^5.1.0",
+		"socket.io": "^4.8.1",
+		"socket.io-client": "^4.8.1"
 	}
 }

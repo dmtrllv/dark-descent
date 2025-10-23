@@ -3,7 +3,7 @@ import { GameObject } from "./game-object";
 import type { Vec2 } from "./vec";
 
 export abstract class Scene {
-	private readonly gameObjects: GameObject[] = [];
+	private gameObjects: GameObject[] = [];
 
 	public readonly components: Map<ComponentType<any>, Component[]> = new Map();
 
@@ -38,6 +38,7 @@ export abstract class Scene {
 			c.forEach(c => c.onDestroy());
 		}
 		this.components.clear();
+		this.gameObjects = [];
 	}
 
 	public async onLoad() { }
@@ -68,7 +69,7 @@ export abstract class Scene {
 		}
 	}
 
-	public createComponent<T extends Component>(type: ComponentType<T>, gameObject: GameObject, props: ComponentProps<T> = {}) {
+	public readonly addComponent = <T extends Component>(type: ComponentType<T>, gameObject: GameObject, props: ComponentProps<T> = {}) => {
 		if (!this.components.has(type)) {
 			this.components.set(type, []);
 		}
@@ -79,14 +80,32 @@ export abstract class Scene {
 			}
 		}
 		component.onInit();
-		this.components.get(type)?.push(component);
+		this.components.get(type)!.push(component);
 		if (this._isLoaded)
 			component.onStart();
 		return component;
 	}
 
+	public removeComponent(c: Component): void {
+		const components = this.getComponents(c.constructor as any);
+		const index = components.indexOf(c);
+		if (index > -1) {
+			console.log("remove component with index", index, c);
+			components.splice(index, 1);
+		}
+		c.onDestroy();
+	}
+
+	public readonly removeGameObject = (obj: GameObject) => {
+		obj.components.forEach(c => this.removeComponent(c));
+		const index = this.gameObjects.indexOf(obj);
+		console.log("remove gameobject with index", index);
+		if (index > -1) {
+			this.gameObjects.splice(index, 1);
+		}
+	}
+
 	public update() {
 		this.gameObjects.forEach(g => g.components.forEach(c => c.onUpdate()));
 	}
-
 }

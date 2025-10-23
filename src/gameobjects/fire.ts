@@ -1,22 +1,21 @@
 import { fireAnimation } from "../animations";
 import { fireCrackles } from "../audio";
-import { GameObject, Vec2, SpriteRenderer, Layer, Light, Animator, Component } from "../engine";
+import { GameObject, Vec2, SpriteRenderer, Light, Animator, Component } from "../engine";
 import { AudioEmitter } from "../engine/audio-emitter";
 
 export class Fire extends GameObject {
 	public constructor(position: Vec2 = new Vec2()) {
 		super();
 		this.transform.position = position;
-		const r = this.addComponent(SpriteRenderer);
+		this.addComponent(SpriteRenderer, { zIndex: 10 });
+		this.addComponent(Light, { radius: 3 });
 
-		r.layer = Layer.map.get();
-		this.addComponent(Light).radius = 3;
+		const animator = this.addComponent(Animator, {
+			animation:  fireAnimation.get(),
+			offset: Math.random() * 1000,
+		});
 
-		const animator = this.addComponent(Animator);
-		animator.animation = fireAnimation.get();
-		animator.offset = Math.random() * 1000;
-
-		const audioEmitter = this.addComponent(AudioEmitter);
+		const audioEmitter = this.addComponent(AudioEmitter, {});
 		audioEmitter.audio = fireCrackles.get().clone();
 		audioEmitter.audio.repeat(Math.random() * 6000, 100);
 

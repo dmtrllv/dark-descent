@@ -1,4 +1,4 @@
-import { GameObject, Layer, LineCollider, RegistryItem, ShadowCaster, Sprite, SpriteRenderer, Vec2 } from "../engine";
+import { GameObject, LineCollider, RegistryItem, ShadowCaster, Sprite, SpriteRenderer, Vec2 } from "../engine";
 import { platform } from "../sprites";
 
 export class Platform extends GameObject {
@@ -11,7 +11,6 @@ export class Platform extends GameObject {
 		this.transform.position = position;
 		this.addComponent(SpriteRenderer, {
 			sprite: sprite.get(),
-			layer: Layer.map.get(),
 		});
 		
 		this.addComponent(ShadowCaster, {

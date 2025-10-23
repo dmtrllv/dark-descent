@@ -5,6 +5,14 @@ export class Input {
 		return this._instance._mouse;
 	}
 
+	public static get touch() {
+		return this._instance._touch;
+	}
+	
+	public static get touchStart() {
+		return this._instance._touchStart;
+	}
+
 	private static readonly _instance = new Input();
 
 	public static readonly isDown = this._instance.isDown.bind(this._instance);
@@ -19,6 +27,8 @@ export class Input {
 	private readonly _wentDown = new Set<string>();
 	private readonly _wentUp = new Set<string>();
 	private readonly _mouse = new Vec2();
+	private _touch: Vec2 | null = null;
+	private _touchStart: Vec2 | null = null;
 
 	private constructor() {
 		window.addEventListener("mousemove", (e) => {
@@ -50,6 +60,22 @@ export class Input {
 					this._wentUp.add(k);
 					this._down.delete(k);
 			}
+		});
+
+		window.addEventListener("touchstart", (e) => {
+			const { clientX, clientY } = e.touches[0];
+			this._touchStart = new Vec2(clientX, clientY);
+			this._touch = new Vec2(clientX, clientY);
+		});
+
+		window.addEventListener("touchmove", (e) => {
+			const { clientX, clientY } = e.touches[0];
+			this._touch = new Vec2(clientX, clientY);
+		});
+
+		window.addEventListener("touchend", () => {
+			this._touch = null;
+			this._touchStart = null;
 		});
 	}
 

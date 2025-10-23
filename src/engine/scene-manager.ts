@@ -6,16 +6,19 @@ export class SceneManager {
 		return this._instance._activeScene !== null;
 	}
 
-	static get activeScene() {
+	public static get isLoading() { return this._instance._isLoading; }
+	
+	public static get activeScene() {
 		const s = this._instance._activeScene;;
 		if (!s)
 			throw new Error(`No scene is loaded!`);
 		return s;
 	};
-
+	
 	public static readonly start = (scene: SceneType<any>) => this._instance.start(scene);
 	public static readonly load = (scene: SceneType<any>) => this._instance.load(scene);
-
+	
+	private _isLoading: boolean = false;
 	private _activeScene: Scene | null = null;
 
 	public get activeScene(): Scene | null {
@@ -38,6 +41,11 @@ export class SceneManager {
 			return;
 		}
 
+		if(this._isLoading)
+			return;
+
+		this._isLoading = true;
+
 		if(this._activeScene) {
 			this._activeScene.unload();
 		}
@@ -45,6 +53,8 @@ export class SceneManager {
 		const s = new type();
 		this._activeScene = s;
 		await s.load();
+
+		this._isLoading = false;
 	}
 }
 
