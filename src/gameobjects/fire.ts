@@ -10,7 +10,7 @@ export class Fire extends GameObject {
 		this.addComponent(SpriteRenderer, { zIndex: 10 });
 		this.addComponent(Light, { radius: 3 });
 
-		const animator = this.addComponent(Animator, {
+		this.addComponent(Animator, {
 			animation:  fireAnimation.get(),
 			offset: Math.random() * 1000,
 		});
