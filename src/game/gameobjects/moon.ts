@@ -12,7 +12,15 @@ export class Moon extends GameObject {
 			layer: layers.background.get(),
 		});
 		this.addComponent(Light, {
-			radius: 5,
+			radius: 14,
+			intensity: 0.45,
+			targetLayers: [
+				layers.background.get()
+			]
+		});
+		this.addComponent(Light, {
+			radius: 3,
+			intensity: 1,
 			targetLayers: [
 				layers.background.get()
 			]

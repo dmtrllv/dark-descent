@@ -76,8 +76,8 @@ export class FirstScene extends Scene {
 
 		camera.target = this.spawn(Player, new Vec2(0, 2), socket).transform;
 
-		this.spawn(Fire, new Vec2(-3, -0.4));
-		this.spawn(Fire, new Vec2(12, -0.4));
+		this.spawn(Fire, new Vec2(-3, -2.4));
+		this.spawn(Fire, new Vec2(12, -2.4));
 
 		this.spawn().addComponent(SettingsPanel);
 		this.spawn(new Vec2(-1, 1)).addComponent(MuteBtn);
