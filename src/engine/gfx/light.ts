@@ -2,7 +2,7 @@ import { Component } from "../component";
 import { Color } from "../color";
 import { Renderer } from "./renderer";
 import type { Material } from "./material";
-import { Layer, Layers } from "./layers";
+import { Layer } from "./layers";
 
 export class Light extends Component {
 	public color: Color = new Color(1, 1, 1, 0);
@@ -17,7 +17,7 @@ export class Light extends Component {
 	public onInit(): void {
 		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
 		if (this.targetLayers === "all") {
-			Layers.forEach(l => l.lights.add(this));
+			Layer.registry.forEach(l => l.lights.add(this));
 		} else {
 			this.targetLayers.forEach(l => l.lights.add(this));
 		}

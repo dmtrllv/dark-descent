@@ -8,8 +8,10 @@ export class Fire extends GameObject {
 	public constructor(position: Vec2 = new Vec2()) {
 		super();
 		this.transform.position = position;
-		this.addComponent(SpriteRenderer, { zIndex: 10, layer: layers.foreground.get() });
-		this.addComponent(Light, { radius: 3 });
+		this.addComponent(SpriteRenderer, {
+			zIndex: 10,
+			layer: layers.foreground.get()
+		});
 
 		this.addComponent(Animator, {
 			animation: fireAnimation.get(),
@@ -28,7 +30,9 @@ class FireLight extends Component {
 	private light: Light | null = null;
 
 	public onStart(): void {
-		this.light = this.getComponent(Light);
+		this.light = this.addComponent(Light, {
+			radius: 3
+		});
 	}
 
 	public onUpdate(): void {

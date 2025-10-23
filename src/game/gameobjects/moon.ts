@@ -11,7 +11,12 @@ export class Moon extends GameObject {
 			sprite: sprites.moon.get(),
 			layer: layers.background.get(),
 		});
-		this.addComponent(Light, { radius: 5 });
+		this.addComponent(Light, {
+			radius: 5,
+			targetLayers: [
+				layers.background.get()
+			]
+		});
 		this.addComponent(CamFollower, { camera });
 	}
 }

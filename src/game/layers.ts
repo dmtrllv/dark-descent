@@ -1,9 +1,8 @@
-import { createLayer } from "../engine/gfx/layers";
+import { Layer } from "../engine/gfx/layers";
 
 export const layers = {
-	background: createLayer("background"),
-	map: createLayer("map"),
-	entities: createLayer("entities"),
-	foreground: createLayer("map-foreground"),
-	ui: createLayer("ui"),
+	background: Layer.register("background"),
+	map: Layer.register("map"),
+	entities: Layer.register("entities"),
+	foreground: Layer.register("foreground"),
 };

@@ -14,7 +14,7 @@ export class Registry<T = never, Args extends any[] = []> {
 		this._isLoaded = true;
 	}
 
-	public readonly register = (init: (...args: Args) => (T | Promise<T>)): RegistryItem<T, Args> => {
+	public readonly register = <U extends T>(init: (...args: Args) => (U | Promise<U>)): RegistryItem<U, Args> => {
 		const item = new RegistryItem(init);
 		this.items.push(item);
 		return item;

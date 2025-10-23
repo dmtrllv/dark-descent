@@ -3,11 +3,10 @@ import { Scene } from "../scene";
 import { SceneManager } from "../scene-manager";
 import { Vec2 } from "../vec";
 import { Camera } from "./camera";
-import { Layers } from "./layers";
+import { Layer } from "./layers";
 import { Light } from "./light";
 import { LightPass } from "./light-render-pass";
 import { Material } from "./material";
-import { renderMergedPasses } from "./merge-pass";
 import type { RenderPass } from "./render-pass";
 import { Shader } from "./shader";
 import { Sprite } from "./sprite";
@@ -27,11 +26,26 @@ export class Renderer {
 	public readonly uvBuffer: WebGLBuffer;
 	public readonly vertexBuffer: WebGLBuffer;
 
+	private readonly passRegistry = new Registry<RenderPass<any>>();
+
+	public get size(): Vec2 {
+		return new Vec2(this.canvas.width, this.canvas.height);
+	}
+
+	public readonly lightPass = this.passRegistry.register(() => new LightPass(this.gl, this.size));
+	public readonly spritePass = this.passRegistry.register(() => new SpriteRenderPass(this.gl, this.size));
+
 	private constructor() {
 		this.canvas = document.createElement("canvas");
-		const gl = this.canvas.getContext("webgl2")!;
+
+		const gl = this.canvas.getContext("webgl2", {
+			premultipliedAlpha: false,
+			alpha: false,
+		})!;
+
 		if (!gl)
 			throw new Error(`Could not get WebGL 2 context!`);
+
 		this.gl = gl;
 
 		document.body.appendChild(this.canvas);
@@ -66,20 +80,11 @@ export class Renderer {
 		]);
 	}
 
-	private readonly passRegistry = new Registry<RenderPass>();
-
-	public get size(): Vec2 {
-		return new Vec2(this.canvas.width, this.canvas.height);
-	}
-
-	public readonly lightPass = this.passRegistry.register(() => new LightPass(this.gl, this.size));
-	public readonly spritePass = this.passRegistry.register(() => new SpriteRenderPass(this.gl, this.size));
-
 	public async load() {
 		await Shader.registry.load(this);
 		await Material.registry.load(this);
 		await Sprite.registry.load(this);
-		await Layers.load(this);
+		await Layer.registry.load();
 		await this.passRegistry.load();
 	}
 
@@ -118,36 +123,39 @@ export class Renderer {
 			return console.warn("Missing camera!");
 		}
 
+		const gl = this.gl;
 		const camera = cameras[0]!;
-		
-		//const sprites = scene.getComponents(SpriteRenderer);
-
-		//const lights = scene.getComponents(Light);
-		
 
 		const lp = this.lightPass.get();
 		const sp = this.spritePass.get();
 
-		lp.render(this, scene, camera);
-		sp.render(this, scene, camera);
+		const allLights = scene.getComponents(Light);
 
-		renderMergedPasses(this, this.size, lp.target.targetTexture, sp.target.targetTexture);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		Layer.registry.forEach(l => {
+			if (l.components.size === 0)
+				return;
+
+			const sprites = Array.from(l.components).filter(s => s instanceof SpriteRenderer);
+			const lights = allLights.filter(s => s.targetLayers === "all" || s.targetLayers.includes(l));
+			
+			sp.render(this, camera, sprites);
+			lp.render(this, camera, lights);
+
+			l.render(this, camera, lp.target.targetTexture, sp.target.targetTexture);
+		});
 
 		this.renderUI(camera, scene);
-	}
-
-	private readonly renderLayer = (sprites: SpriteRenderer[], lights: Light[]) => {
-		
 	}
 
 	private renderUI(camera: Camera, scene: Scene) {
 		const material = Material.unlitSprite.get();
 		const gl = this.gl;
 
-		gl.useProgram(material.program);
-		camera.useUniforms(gl, material);
-		gl.uniform2fv(material.uniforms.screenResolution, [this.canvas.width, this.canvas.height]);
-
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		material.use(gl, camera, this.size);
 		scene.getComponents(UI).forEach(ui => ui.render(this, material));
 	}
 

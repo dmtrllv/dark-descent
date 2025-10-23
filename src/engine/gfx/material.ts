@@ -1,4 +1,6 @@
 import { Registry, RegistryItem } from "../registry";
+import type { Vec2 } from "../vec";
+import type { Camera } from "./camera";
 import type { Renderer } from "./renderer";
 import { Shader } from "./shader";
 
@@ -16,7 +18,7 @@ export class Material {
 
 	public readonly attributes: Record<string, number> = {};
 	public readonly uniforms: Record<string, WebGLUniformLocation> = {};
-	
+
 	public readonly program: WebGLProgram;
 
 	public constructor(renderer: Renderer, vertex: Shader, fragment: Shader) {
@@ -25,10 +27,10 @@ export class Material {
 		gl.attachShader(this.program, vertex.shader);
 		gl.attachShader(this.program, fragment.shader);
 		gl.linkProgram(this.program);
-		
+
 		Object.keys(vertex.attributes).forEach(name => {
 			const loc = gl.getAttribLocation(this.program, name);
-			if(loc <= -1)
+			if (loc <= -1)
 				return console.warn(`Could not get attributes location for ${name} at ${vertex.path}!`);
 			this.attributes[name] = loc;
 		});
@@ -36,10 +38,15 @@ export class Material {
 		const uniforms = [...Object.keys(vertex.uniforms), ...Object.keys(fragment.uniforms)]
 		uniforms.forEach(name => {
 			const loc = gl.getUniformLocation(this.program, name);
-			if(!loc)
+			if (!loc)
 				return console.warn(`Could not get attributes location for ${name} at ${vertex.path} or ${fragment.path}!`);
 			this.uniforms[name] = loc;
 		});
 	}
-	
+
+	public use = (gl: GL, camera: Camera, size: Vec2) => {
+		gl.useProgram(this.program);
+		camera.useUniforms(gl, this);
+		gl.uniform2fv(this.uniforms.screenResolution, [size.x, size.y]);
+	}
 }

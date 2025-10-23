@@ -35,8 +35,6 @@ export class UI extends RenderComponent {
 	}
 
 	public render(renderer: Renderer, material: Material) {
-		console.log("render");
-		
 		if(this.hidden)
 			return;
 		

@@ -19,8 +19,6 @@ export class SpriteRenderer extends RenderComponent {
 
 		const gl = renderer.gl;
 
-		console.log("render sprite");
-
 		this.transform.resolveDirty(() => {
 			gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
 			gl.bufferData(gl.ARRAY_BUFFER, this.transform.position.farray, gl.DYNAMIC_DRAW);

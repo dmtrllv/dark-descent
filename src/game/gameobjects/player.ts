@@ -6,6 +6,7 @@ import { clamp } from "../../utils";
 import { SceneManager } from "../../engine/scene-manager";
 import { UI } from "../../engine/gfx/ui";
 import { layers } from "../layers";
+import { Layer } from "../../engine/gfx/layers";
 
 export class NetworkPlayer extends GameObject {
 	public constructor(position: Vec2 = new Vec2) {
@@ -17,7 +18,7 @@ export class NetworkPlayer extends GameObject {
 
 		this.addComponent(SpriteRenderer, {
 			sprite: sprites.player.get(),
-			layer: layers.entities.get(),
+			layer: layers.map.get(),
 		});
 	}
 }
@@ -28,11 +29,19 @@ export class Player extends GameObject {
 
 		this.transform.position = position;
 
-		this.addComponent(Light, { radius: 8 });
+		this.addComponent(Light, {
+			radius: 8,
+			targetLayers: [
+				Layer.default.get(),
+				layers.entities.get(),
+				layers.map.get(),
+				layers.foreground.get(),
+			]
+		});
 
 		this.addComponent(SpriteRenderer, {
 			sprite: sprites.player.get(),
-			layer: layers.entities.get(),
+			layer: layers.map.get(),
 		});
 
 		this.addComponent(Rigidbody);

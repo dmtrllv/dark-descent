@@ -1,4 +1,4 @@
-import { Scene, Camera, Vec2, SpriteRenderer } from "../../engine";
+import { Scene, Camera, Vec2, SpriteRenderer, Component, Light } from "../../engine";
 
 import { Fire, Map, Moon, NetworkPlayer, Player } from "../gameobjects";
 import { CamPlayerFollower, SettingsPanel } from "../components";
@@ -7,6 +7,8 @@ import * as sprites from "../sprites";
 import { bird1, bird2, bird3 } from "../audio";
 import { MuteBtn } from "../components/mute-btn";
 import { io, Socket } from "socket.io-client";
+import { Input } from "../../engine/input";
+import { SceneManager } from "../../engine/scene-manager";
 
 export class FirstScene extends Scene {
 	public static online: boolean = false;

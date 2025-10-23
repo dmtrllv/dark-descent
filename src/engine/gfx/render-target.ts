@@ -18,7 +18,15 @@ export class RenderTarget {
 		this.fb = gl.createFramebuffer();
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
 		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.targetTexture, 0);
+		gl.viewport(0, 0, size.x, size.y);
+		//gl.clearColor(0, 0, 0, 0);
 
+		//gl.clearDepth(1.0);
+		//gl.enable(gl.DEPTH_TEST);
+		//gl.depthFunc(gl.LEQUAL);
+
+		//gl.enable(gl.BLEND);
+		//gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	}
 
 	public resize(gl: GL, newSize: Vec2) {
@@ -34,13 +42,10 @@ export class RenderTarget {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 	}
-	
-	public render(gl: GL, callback: () => any): WebGLTexture {
+
+	public readonly clear = (gl: GL) => {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
 		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.targetTexture, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		gl.viewport(0, 0, this.size.x, this.size.y);
-		callback();
-		return this.targetTexture;
 	}
 }
