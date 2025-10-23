@@ -3,7 +3,8 @@ import { Scene } from "../scene";
 import { SceneManager } from "../scene-manager";
 import { Vec2 } from "../vec";
 import { Camera } from "./camera";
-//import { Layer } from "./layer";
+import { Layers } from "./layers";
+import { Light } from "./light";
 import { LightPass } from "./light-render-pass";
 import { Material } from "./material";
 import { renderMergedPasses } from "./merge-pass";
@@ -11,6 +12,7 @@ import type { RenderPass } from "./render-pass";
 import { Shader } from "./shader";
 import { Sprite } from "./sprite";
 import { SpriteRenderPass } from "./sprite-render-pass";
+import { SpriteRenderer } from "./sprite-renderer";
 import { UI } from "./ui";
 
 export class Renderer {
@@ -77,7 +79,7 @@ export class Renderer {
 		await Shader.registry.load(this);
 		await Material.registry.load(this);
 		await Sprite.registry.load(this);
-		//await Layer.registry.load();
+		await Layers.load(this);
 		await this.passRegistry.load();
 	}
 
@@ -99,15 +101,15 @@ export class Renderer {
 			});
 		}
 
-		if(SceneManager.hasActiveScene) {
+		if (SceneManager.hasActiveScene) {
 			this.render(SceneManager.activeScene);
 		}
 	}
 
 	public render(scene: Scene) {
-		if(SceneManager.isLoading)
+		if (SceneManager.isLoading)
 			return;
-		
+
 		const cameras = scene.getComponents(Camera);
 
 		if (cameras.length > 1) {
@@ -117,6 +119,11 @@ export class Renderer {
 		}
 
 		const camera = cameras[0]!;
+		
+		//const sprites = scene.getComponents(SpriteRenderer);
+
+		//const lights = scene.getComponents(Light);
+		
 
 		const lp = this.lightPass.get();
 		const sp = this.spritePass.get();
@@ -129,6 +136,10 @@ export class Renderer {
 		this.renderUI(camera, scene);
 	}
 
+	private readonly renderLayer = (sprites: SpriteRenderer[], lights: Light[]) => {
+		
+	}
+
 	private renderUI(camera: Camera, scene: Scene) {
 		const material = Material.unlitSprite.get();
 		const gl = this.gl;
@@ -136,7 +147,7 @@ export class Renderer {
 		gl.useProgram(material.program);
 		camera.useUniforms(gl, material);
 		gl.uniform2fv(material.uniforms.screenResolution, [this.canvas.width, this.canvas.height]);
-		
+
 		scene.getComponents(UI).forEach(ui => ui.render(this, material));
 	}
 

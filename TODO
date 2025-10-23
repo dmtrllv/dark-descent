@@ -6,6 +6,7 @@ Audio:
 Renderer:
 	- 2D normal mapping
 	- Shadow render pass
+	- background should only use AO and no other lightning
 	
 	Performance: 
 		- add uniform object buffers

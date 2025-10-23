@@ -3,6 +3,9 @@ import express from "express";
 import { Server, Socket } from "socket.io";
 import path from "path";
 
+const HOST = "localhost";
+const PORT = 10000;
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
@@ -43,6 +46,6 @@ io.on("connection", (socket) => {
 
 });
 
-server.listen(10000, () => {
-	console.log("server running at http://localhost");
+server.listen(PORT, () => {
+	console.log(`Server running at http://${HOST}:${PORT}`);
 });

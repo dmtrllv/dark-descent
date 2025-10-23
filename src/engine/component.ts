@@ -21,10 +21,7 @@ export abstract class Component {
 
 	public onCollision(_col: Collider) {}
 	
-	public onDestroy(): void {
-		console.log("onDestroy", this);
-	}
-	
+	public onDestroy(): void {}
 }
 
 export type ComponentType<T extends Component> = new (gameObject: GameObject) => T;

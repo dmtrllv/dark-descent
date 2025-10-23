@@ -18,6 +18,7 @@ export class UI extends RenderComponent {
 	public onClick?: () => void;
 
 	public onInit(): void {
+		super.onInit();
 		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
 		window.addEventListener("mousedown", this.onMouseDown);
 	}
@@ -34,6 +35,8 @@ export class UI extends RenderComponent {
 	}
 
 	public render(renderer: Renderer, material: Material) {
+		console.log("render");
+		
 		if(this.hidden)
 			return;
 		

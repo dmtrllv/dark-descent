@@ -4,6 +4,6 @@ export * from "./renderer";
 export * from "./shader";
 export * from "./sprite";
 export * from "./sprite-renderer";
-export * from "./layer";
+export * from "./layers";
 export * from "./light";
 export * from "./shadow-caster";

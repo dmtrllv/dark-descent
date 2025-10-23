@@ -1,6 +1,6 @@
 import { Engine } from "./engine/engine";
-import { playMusic } from "./music-player";
-import { StartMenu } from "./scenes/game-menu";
+import { playMusic } from "./game/music-player";
+import { StartMenu } from "./game/scenes/game-menu";
 
 const start = async () => {
 	window.removeEventListener("keypress", start);

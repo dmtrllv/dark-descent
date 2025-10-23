@@ -1,5 +1,6 @@
 import type { Scene } from "../scene";
 import { Time } from "../time";
+import { Vec2 } from "../vec";
 import { Collider } from "./collider";
 import { Rigidbody } from "./rigidbody";
 
@@ -7,6 +8,10 @@ export class Physics {
 	private static readonly _instance: Physics = new Physics();
 
 	public static readonly update = this._instance.update.bind(this._instance);
+
+	public static readonly overlapsCircle = (center: Vec2, radius: number, point: Vec2) => {
+		return Vec2.distance(center, point) <= radius;
+	}
 
 	private lastOffset = 0;
 

@@ -1,5 +1,5 @@
 export class Registry<T = never, Args extends any[] = []> {
-	public constructor() {}
+	public constructor() { }
 
 	private readonly items: RegistryItem<T, Args>[] = [];
 
@@ -21,16 +21,29 @@ export class Registry<T = never, Args extends any[] = []> {
 	}
 
 	public readonly forEach = (callback: (item: T) => void) => {
-		this.items.forEach(item => callback(item.get()));
+		this.items.forEach(item => {
+			const data = item["_data"];
+			if (data !== undefined)
+				callback(data);
+		});
+	}
+
+	public readonly find = (callback: (item: T) => boolean): T | null => {
+		return this.items.find(item => {
+			const data = item["_data"];
+			if (data !== undefined)
+				return callback(data);
+			return false;
+		})?.get() || null;
 	}
 }
 
-export class RegistryItem<T, Args extends any[] = any> {
+export class RegistryItem<T extends NonNullable<any>, Args extends any[] = any> {
 	private _data: T | undefined = undefined;
 	private readonly _init: (...args: Args) => Promise<void>;
-	
+
 	public get() {
-		if(this._data === undefined)
+		if (this._data === undefined)
 			throw new Error(`Not loaded!`);
 		return this._data;
 	}
@@ -38,6 +51,6 @@ export class RegistryItem<T, Args extends any[] = any> {
 	public constructor(init: (...args: Args) => (T | Promise<T>)) {
 		this._init = async (...args: Args) => {
 			this._data = await init(...args);
-		};		
+		};
 	}
 }

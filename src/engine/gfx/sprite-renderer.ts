@@ -7,9 +7,9 @@ export class SpriteRenderer extends RenderComponent {
 	public sprite: Sprite | null = null;
 	private positionBuffer!: WebGLBuffer;
 	public flip: boolean = false;
-	public zIndex: number = 0;
 
 	public onInit(): void {
+		super.onInit();
 		this.positionBuffer = Renderer.createArrayBuffer([0, 0]);
 	}
 
@@ -18,6 +18,8 @@ export class SpriteRenderer extends RenderComponent {
 			return;
 
 		const gl = renderer.gl;
+
+		console.log("render sprite");
 
 		this.transform.resolveDirty(() => {
 			gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);

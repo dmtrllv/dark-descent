@@ -90,7 +90,6 @@ export abstract class Scene {
 		const components = this.getComponents(c.constructor as any);
 		const index = components.indexOf(c);
 		if (index > -1) {
-			console.log("remove component with index", index, c);
 			components.splice(index, 1);
 		}
 		c.onDestroy();
@@ -99,7 +98,6 @@ export abstract class Scene {
 	public readonly removeGameObject = (obj: GameObject) => {
 		obj.components.forEach(c => this.removeComponent(c));
 		const index = this.gameObjects.indexOf(obj);
-		console.log("remove gameobject with index", index);
 		if (index > -1) {
 			this.gameObjects.splice(index, 1);
 		}

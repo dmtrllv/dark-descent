@@ -5,8 +5,10 @@
 	"type": "module",
 	"main": "./dist/index.js",
 	"scripts": {
-		"watch-client": "vite build --watch",
+		"watch-client": "cross-env NODE_ENV=development vite build --watch --mode development",
 		"watch-server": "tsc -p tsconfig.server.json --watch",
+		"watch-dev": "nodemon --watch ./dist --exec \"node .\"",
+		"watch": "concurrently npm:watch-*",
 		"build-client": "tsc && vite build",
 		"build-server": "tsc -p tsconfig.server.json",
 		"build": "npm run build-server && npm run build-client"
@@ -16,6 +18,9 @@
 		"@types/node": "^24.9.1",
 		"@types/socket.io": "^3.0.1",
 		"@types/socket.io-client": "^1.4.36",
+		"concurrently": "^9.2.1",
+		"cross-env": "^10.1.0",
+		"nodemon": "^3.1.10",
 		"typescript": "~5.9.3",
 		"vite": "^7.1.11"
 	},

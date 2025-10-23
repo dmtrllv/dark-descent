@@ -98,5 +98,3 @@ export class Vec2 {
 	public readonly clone = (): any => new Vec2(this.x, this.y);
 
 }
-
-//export const vec2 = (x: number = 0, y: number = 0) => new Vec2(x, y);
