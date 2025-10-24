@@ -13,7 +13,7 @@ export class Audio {
 	public static readonly registry = new Registry<Audio, [AudioManager]>();
 
 	public static readonly register = (path: string) => this.registry.register((manager) => {
-		return new Promise((res, rej) => {
+		return new Promise<Audio>((res, rej) => {
 			const a = new Audio(manager, path);
 			a.audio.addEventListener("canplaythrough", () => {
 				res(a);

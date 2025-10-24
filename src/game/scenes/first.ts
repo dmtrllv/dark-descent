@@ -1,4 +1,4 @@
-import { Scene, Camera, Vec2, SpriteRenderer, Component, Light } from "../../engine";
+import { Scene, Camera, Vec2, SpriteRenderer, Animator } from "../../engine";
 
 import { Fire, Map, Moon, NetworkPlayer, Player } from "../gameobjects";
 import { CamPlayerFollower, SettingsPanel } from "../components";
@@ -7,8 +7,7 @@ import * as sprites from "../sprites";
 import { bird1, bird2, bird3 } from "../audio";
 import { MuteBtn } from "../components/mute-btn";
 import { io, Socket } from "socket.io-client";
-import { Input } from "../../engine/input";
-import { SceneManager } from "../../engine/scene-manager";
+import { playerAnimation, playerWalkingAnimation } from "../animations";
 
 export class FirstScene extends Scene {
 	public static online: boolean = false;
@@ -94,10 +93,17 @@ export class FirstScene extends Scene {
 				delete this.players[k];
 			});
 
-			socket!.on("player-update", (id, pos) => {
-				const x = this.players[id].transform.position.x;
-				this.players[id].transform.position = new Vec2(pos.x, pos.y);
-				this.players[id].getComponent(SpriteRenderer)!.flip = pos.x < x;
+			socket!.on("player-update", (id, player) => {
+				const p = this.players[id];
+				const x = p.transform.position.x;
+				p.transform.position = new Vec2(player.x, player.y);
+				p.getComponent(SpriteRenderer)!.flip = player.x < x;
+				const anim = p.getComponent(Animator)!;
+				if(player.isWalking) {
+					anim.animation = playerWalkingAnimation.get();
+				} else {
+					anim.animation = playerAnimation.get();
+				}
 			});
 		}
 	}

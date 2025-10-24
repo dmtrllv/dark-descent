@@ -1,7 +1,6 @@
 import type { Component } from "../component";
 import type { Vec2 } from "../vec";
 import type { Camera } from "./camera";
-import type { Material } from "./material";
 import { RenderTarget } from "./render-target";
 import type { Renderer } from "./renderer";
 

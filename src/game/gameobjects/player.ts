@@ -8,7 +8,6 @@ import { UI } from "../../engine/gfx/ui";
 import { layers } from "../layers";
 import { Layer } from "../../engine/gfx/layers";
 import { playerAnimation, playerWalkingAnimation } from "../animations";
-import { playerWalking } from "../sprites/character";
 
 export class NetworkPlayer extends GameObject {
 	public constructor(position: Vec2 = new Vec2) {
@@ -16,11 +15,23 @@ export class NetworkPlayer extends GameObject {
 
 		this.transform.position = position;
 
-		this.addComponent(Light, { radius: 8 });
+		this.addComponent(Light, {
+			radius: 8,
+			targetLayers: [
+				Layer.default.get(),
+				layers.entities.get(),
+				layers.map.get(),
+				layers.foreground.get(),
+			]
+		});
 
 		this.addComponent(SpriteRenderer, {
 			sprite: sprites.player.get(),
 			layer: layers.map.get(),
+		});
+
+		this.addComponent(Animator, {
+			animation: playerAnimation.get()
 		});
 	}
 }
@@ -77,11 +88,12 @@ class InputHandler extends Component {
 
 	public speed: number = 0.46;
 	public socket: Socket | null = null;
-	
+
 	private readonly touchStartOffset: number = 25;
 
 	private _prevPosition: Vec2;
-	private touchBtn: UiTouchBtn;
+	private _touchBtn: UiTouchBtn;
+	private _isWalking: boolean = false;
 
 	public constructor(gameObject: GameObject) {
 		super(gameObject);
@@ -92,7 +104,7 @@ class InputHandler extends Component {
 
 		const camera = SceneManager.activeScene.getComponents(Camera)[0]!;
 
-		this.touchBtn = SceneManager.activeScene.spawn(camera.screenToWorld(new Vec2(0, 0))).addComponent(UiTouchBtn);
+		this._touchBtn = SceneManager.activeScene.spawn(camera.screenToWorld(new Vec2(0, 0))).addComponent(UiTouchBtn);
 	}
 
 	public onCollision(col: Collider): void {
@@ -106,10 +118,10 @@ class InputHandler extends Component {
 		if (Input.touch && Input.touchStart) {
 			const camera = SceneManager.activeScene.getComponents(Camera)[0]!;
 
-			this.touchBtn.transform.position = camera.screenToWorld(Input.touchStart).sub(camera.transform.position);
-			this.touchBtn.thumb.transform.position = camera.screenToWorld(Input.touch).sub(camera.transform.position);
+			this._touchBtn.transform.position = camera.screenToWorld(Input.touchStart).sub(camera.transform.position);
+			this._touchBtn.thumb.transform.position = camera.screenToWorld(Input.touch).sub(camera.transform.position);
 
-			this.touchBtn.show();
+			this._touchBtn.show();
 
 			const delta = Input.touchStart.x - Input.touch.x;
 			if (delta > this.touchStartOffset) {
@@ -122,7 +134,7 @@ class InputHandler extends Component {
 				this.rb.velocity.x = 0;
 			}
 		} else {
-			this.touchBtn.hide();
+			this._touchBtn.hide();
 
 			if (Input.isDown("a") && Input.isUp("d")) {
 				this.rb.velocity.x = -1 * this.speed;
@@ -145,17 +157,23 @@ class InputHandler extends Component {
 			this.transform.position.y = clamp(this.transform.position.y, -3, 10);
 		}
 
-		if (this.socket && Vec2.distance(this._prevPosition, this.transform.position) > 0) {
-			this._prevPosition = this.transform.position.clone();
-			const { x, y } = this.transform.position;
-			this.socket.emit("player-update", { x, y });
+		const isWalking = this.rb.velocity.x !== 0;
+
+		if (isWalking !== this._isWalking) {
+			if (isWalking) {
+				this.animator.animation = playerWalkingAnimation.get();
+			} else {
+				this.animator.animation = playerAnimation.get();
+			}
 		}
 
-		if(this.rb.velocity.x !== 0) {
-			this.animator.animation = playerWalkingAnimation.get();
-		} else {
-			this.animator.animation = playerAnimation.get();
+		if (this.socket && (Vec2.distance(this._prevPosition, this.transform.position) > 0 || isWalking !== this._isWalking)) {
+			this._prevPosition = this.transform.position.clone();
+			const { x, y } = this.transform.position;
+			this.socket.emit("player-update", { x, y, isWalking });
 		}
+
+		this._isWalking = isWalking
 	}
 }
 

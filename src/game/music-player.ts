@@ -1,11 +1,10 @@
-import { intro, intro2, travels, waltz } from "./songs";
+import { intro, intro2, waltz } from "./songs";
 
 let current = Math.round(Math.random() * Date.now());
 
 const songs = [
 	intro,
 	intro2,
-	//travels,
 	waltz,
 ];
 

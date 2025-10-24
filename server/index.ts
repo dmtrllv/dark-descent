@@ -14,10 +14,10 @@ app.use(express.static(path.resolve(import.meta.dirname, "public")));
 
 const allSockets: Socket[] = [];
 
-const players: Record<string, { x: number, y: number }> = {};
+const players: Record<string, { x: number, y: number, isWalking: boolean }> = {};
 
 io.on("connection", (socket) => {
-	players[socket.id] = { x: 0, y: 0 };
+	players[socket.id] = { x: 0, y: 0, isWalking: false };
 
 	socket.on("disconnect", () => {
 		delete players[socket.id];
