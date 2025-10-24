@@ -4,12 +4,19 @@ import { Vec2 } from "../vec";
 export class BoxCollider extends Component {
 	public enabled: boolean = false;
 	public _size: Vec2 = new Vec2(1, 1);
+	public _offset: Vec2 = new Vec2();
 	private _isDirty: boolean = false;
 
 	public get size(): Readonly<Vec2> { return this._size; }
+	public get offset(): Readonly<Vec2> { return this._offset; }
 
 	public set size(value: Vec2) {
 		this._size = value;
+		this._isDirty = true;
+	}
+
+	public set offset(value: Vec2) {
+		this._offset = value;
 		this._isDirty = true;
 	}
 
@@ -35,7 +42,7 @@ export class BoxCollider extends Component {
 
 	private recalc() {
 		this._isDirty = false;
-		const { x, y } = this.transform.position;
+		const { x, y } = Vec2.add(this.transform.position, this.offset);
 		this._left = x - this.size.x / 2;
 		this._right = x + this.size.x / 2;
 		this._top = y + this.size.y / 2;

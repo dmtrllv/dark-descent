@@ -1,90 +1,18 @@
 import type { Socket } from "socket.io-client";
-import { Component, GameObject, Light, SpriteRenderer, Vec2, AudioListener, BoxCollider, Rigidbody, Camera, Animator } from "../../engine";
-import * as sprites from "../sprites";
+import { Component, GameObject, SpriteRenderer, Vec2, BoxCollider, Rigidbody, Camera, Animator } from "../../engine";
 import { SceneManager } from "../../engine/scene-manager";
-import { UI } from "../../engine/gfx/ui";
-import { layers } from "../layers";
-import { Layer } from "../../engine/gfx/layers";
 import { playerAnimation, playerWalkingAnimation } from "../animations";
-import { clamp } from "../../utils";
 import { Input } from "../../engine/input";
+import { UI } from "../../engine/gfx/ui";
+import * as sprites from "../sprites";
 
-export class NetworkPlayer extends GameObject {
-	public constructor(position: Vec2 = new Vec2) {
-		super();
-
-		this.transform.position = position;
-
-		this.addComponent(Light, {
-			radius: 8,
-			targetLayers: [
-				Layer.default.get(),
-				layers.entities.get(),
-				layers.map.get(),
-				layers.foreground.get(),
-			]
-		});
-
-		this.addComponent(SpriteRenderer, {
-			sprite: sprites.player.get(),
-			layer: layers.map.get(),
-		});
-
-		this.addComponent(Animator, {
-			animation: playerAnimation.get()
-		});
-	}
-}
-
-export class Player extends GameObject {
-	public constructor(position: Vec2 = new Vec2, socket: Socket | null) {
-		super();
-
-		this.transform.position = position;
-
-		this.addComponent(Light, {
-			radius: 8,
-			targetLayers: [
-				Layer.default.get(),
-				layers.entities.get(),
-				layers.map.get(),
-				layers.foreground.get(),
-			]
-		});
-
-		this.addComponent(Animator, {
-			animation: playerAnimation.get(),
-			offset: Math.random() * 1000,
-		});
-
-		this.addComponent(SpriteRenderer, {
-			sprite: sprites.player.get(),
-			layer: layers.map.get(),
-		});
-
-		this.addComponent(Rigidbody);
-		this.addComponent(InputHandler, { socket });
-		this.addComponent(AudioListener);
-		this.addComponent(BoxCollider, {});
-		this.addComponent(MapBorder);
-	}
-
-	public destroy = () => {
-		const scene = SceneManager.activeScene;
-		this.components.forEach(c => {
-			scene.removeComponent(c);
-		});
-		scene.removeGameObject(this);
-	}
-
-}
-
-class InputHandler extends Component {
+export class InputHandler extends Component {
 	public readonly rb: Rigidbody;
 	public readonly renderer: SpriteRenderer;
 	public readonly animator: Animator;
 
 	public speed: number = 0.46;
+	public jumpForce: number = 2.5;
 	public socket: Socket | null = null;
 
 	private readonly touchStartOffset: number = 25;
@@ -150,7 +78,7 @@ class InputHandler extends Component {
 				this.rb.velocity.x = 0;
 			}
 			if (this._isGrounded && Input.isDown("space")) {
-				this.rb.velocity.y = 3;
+				this.rb.velocity.y = this.jumpForce;
 			}
 		}
 
@@ -170,9 +98,10 @@ class InputHandler extends Component {
 			this.socket.emit("player-update", { x, y, isWalking });
 		}
 
-		this._isWalking = isWalking
+		this._isWalking = isWalking;
 	}
 }
+
 
 class UiTouchBtn extends Component {
 	private readonly btn = this.addComponent(UI, {
@@ -192,16 +121,4 @@ class UiTouchBtn extends Component {
 		this.btn.hidden = false;
 		this.thumb.hidden = false;
 	};
-}
-
-class MapBorder extends Component {
-	public readonly offset: Vec2 = new Vec2(0, 0);
-	public readonly size: Vec2 = new Vec2(13, 7);
-
-	public onUpdate(): void {
-		const { x, y } = this.transform.position;
-		
-		this.transform.position.x = clamp(x, this.offset.x - this.size.x, this.offset.x + this.size.x);
-		this.transform.position.y = clamp(y, this.offset.y - this.size.y, this.offset.y + this.size.y);
-	}
 }

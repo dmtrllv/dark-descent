@@ -19,7 +19,8 @@ export class Platform extends GameObject {
 		this.addComponent(ShadowCaster, {});
 
 		this.addComponent(BoxCollider, {
-			size: new Vec2(2, 1)
+			size: new Vec2(2, 0.25),
+			offset: new Vec2(0, -0.1),
 		});
 	}
 }

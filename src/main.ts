@@ -1,5 +1,4 @@
-import { Engine } from "./engine/engine";
-import { StartMenu } from "./game/scenes/game-menu";
+import { Game } from "./game/game";
 
 const start = async () => {
 	const startText = document.querySelector("div")!;
@@ -8,8 +7,6 @@ const start = async () => {
 	
 	window.removeEventListener("click", start);
 	window.removeEventListener("keypress", start);
-
-	const engine = new Engine();
 
 	let count = 0;
 	const interval = setInterval(() => {
@@ -23,7 +20,7 @@ const start = async () => {
 		res()
 	}, 1));
 
-	await engine.start(StartMenu);
+	await Game.start();
 
 	clearInterval(interval);
 	startText.remove();

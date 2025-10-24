@@ -11,27 +11,16 @@ export class Engine {
 	private readonly eventListeners: EventListeners = {};
 
 	private _animationFrame: number | null = null;
-
+	private _isRunning = false;
 	private _isActive = true;
 
-	public constructor() {
-		console.log("Engine starting...");
-		
-		window.addEventListener("blur", this.onInactive);
-		window.addEventListener("focus", this.onActive);
-	}
-
-	private readonly onActive = () => {
-		//this.resume();
-		//this._isActive = true;
-	}
-	
-	private readonly onInactive = () => {
-		//this.stop();
-		//this._isActive = false;
-	}
+	public constructor() {}
 
 	public async start(scene: SceneType<any>) {
+		if(this._isRunning)
+			return;
+		
+		this._isRunning = true;
 		await AudioManager.load();
 		await Renderer.load();
 		await Animation.registry.load();
@@ -50,7 +39,7 @@ export class Engine {
 		await Promise.all(listeners.map(l => l(...args)));
 	}
 
-	public readonly tick = () => {
+	private readonly tick = () => {
 		if (!this._isActive)
 			return;
 
