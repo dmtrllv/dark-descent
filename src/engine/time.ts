@@ -4,7 +4,6 @@ export class Time {
 	
 	public static get delta() { return this._delta; }
 	public static get time() { return this._time; }
-	public static get fixedDelta() { return 1 / 240; }
 	public static get lastTick() { return this._lastTick; }
 
 	private static _lastTick = performance.now();

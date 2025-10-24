@@ -1,3 +1,11 @@
+Global Fixes:
+	- check event listener removal -> prevent memory leaks
+	- event listener debounce/throttle
+
+Storage:
+	- log data
+	- save data
+	
 Audio:
 	- min/max volume -> clamp when set
 	- prevent multiple audio sources to overlap when close to each other
@@ -9,9 +17,11 @@ Renderer:
 	- Split UI and SpriteRenderer
 	
 	Performance: 
+		- webworkers
 		- add uniform object buffers
 		- add vertex objects
 		- instanced rendering
+		- cache layers when not dirty
 
 Physics:
 	- Ray shooting
@@ -27,6 +37,9 @@ Animator/Animation:
 Settings:
 	- fps
 	- UI scale
+
+Utils:
+	- Assertions
 
 Game:
 	- Add min/max offset for target following

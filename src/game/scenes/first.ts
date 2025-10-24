@@ -59,7 +59,6 @@ export class FirstScene extends Scene {
 		if (FirstScene.online) {
 			socket = io();
 
-
 			await new Promise<void>((res) => {
 				socket!.emit("get-current-players");
 				socket!.on("current-players", (players) => {

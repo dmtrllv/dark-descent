@@ -1,7 +1,7 @@
+import { split } from "../../utils";
 import type { Scene } from "../scene";
-import { Time } from "../time";
 import { Vec2 } from "../vec";
-import { Collider } from "./collider";
+import { BoxCollider } from "./box-collider";
 import { Rigidbody } from "./rigidbody";
 
 export class Physics {
@@ -13,40 +13,116 @@ export class Physics {
 		return Vec2.distance(center, point) <= radius;
 	}
 
-	private lastOffset = 0;
+	private _prevDynamicColliders: BoxCollider[] = [];
+	private _prevCollisions: BoxCollider[][] = [];
 
 	public readonly update = (scene: Scene) => {
-		const iterations = (Time.delta / Time.fixedDelta) + this.lastOffset;
-		const t = iterations * Time.fixedDelta;
-		this.lastOffset = Time.delta - t;
+		const boxColliders = scene.getComponentsOfKind(BoxCollider);
+		boxColliders.forEach(c => c.updateDirty());
+		const [dynamic, colliders] = split(boxColliders, item => !!item.getComponent(Rigidbody));
 
-		for (let i = 0; i < iterations; i++) {
-			this.run(scene);
-		}
-	}
+		const collisions = this.checkCollisions(dynamic, colliders);
 
-	private readonly run = (scene: Scene) => {
-		scene.getComponents(Rigidbody).forEach(r => r.onFixedUpdate());
-		
-		const colliders = scene.getComponentsOfKind(Collider);
-		const collisions: [Collider, Collider][] = [];
-		for (let i = 0; i < colliders.length; i++) {
-			const a = colliders[i]!;
-			for (let j = i + 1; j < colliders.length; j++) {
-				const b = colliders[j]!;
-				if (a.collidesWith(b)) {
-					collisions.push([a, b]);
-				}
+		this._prevDynamicColliders.forEach((d, index) => {
+			const i = dynamic.indexOf(d);
+			if (i === -1) {
+				this._prevCollisions[i]?.forEach(c => {
+					c.gameObject.onCollisionLeave(d);
+					d.gameObject.onCollisionLeave(c);
+				});
+				return;
 			}
-		}
 
-		const emitCollision = (a: Collider, b: Collider) => {
-			a.gameObject.components.forEach(c => c.onCollision(b));
-		};
+			const checks = collisions[i]!;
 
-		collisions.forEach(([a, b]) => {
-			emitCollision(a, b);
-			emitCollision(b, a);
+			this._prevCollisions[index].forEach(col => {
+				if (!checks.includes(col)) {
+					d.gameObject.onCollisionLeave(col);
+					col.gameObject.onCollisionLeave(d);
+				}
+			});
+		});
+
+		this._prevCollisions = collisions;
+		this._prevDynamicColliders = dynamic;
+
+		dynamic.forEach((d, i) => {
+			collisions[i]!.forEach(col => {
+				d.gameObject.onCollision(col);
+				col.gameObject.onCollision(d);
+			});
 		});
 	}
+	private checkCollisions(dynamic: BoxCollider[], colliders: BoxCollider[]): BoxCollider[][] {
+		const collisions: BoxCollider[][] = dynamic.map(() => []);
+		colliders.forEach(c => {
+			dynamic.forEach((d, i) => {
+				if (d.collidesWith(c)) {
+					collisions[i].push(c);
+
+					const rb = d.getComponent(Rigidbody)!;
+					const cy = c.transform.position.y;
+					const y = d.transform.position.y;
+					if (cy > y) {
+						const offsetY = d.top - c.bottom;
+						d.transform.position.y -= offsetY;
+					} else {
+						const offsetY = c.top - d.bottom;
+						d.transform.position.y += (offsetY - 0.005); // todo: make this offset configurable
+					}
+
+					if (rb.velocity.y < 0) {
+						rb.velocity.y = 0;
+					}
+					d.gameObject.onCollision(c);
+				}
+			});
+		});
+		return collisions;
+	}
 }
+
+//this.previousDynamicCollisions.forEach((c, index) => {
+//	const i = dynamicColliders.indexOf(c);
+//	if (i === -1) {
+//		this.previousCollisions[index].forEach(col => c.gameObject.onCollisionLeave(col));
+//		return;
+//	}
+
+//	const checks = collisions[i]!;
+
+//	this.previousCollisions[index].forEach(col => {
+//		if (!checks.includes(col)) {
+//			c.gameObject.onCollisionLeave(col);
+//		}
+//	});
+//});
+
+//this.previousDynamicCollisions = dynamicColliders;
+//this.previousCollisions = collisions;
+
+//collisions.forEach((colliders, i) => {
+//	const d = dynamicColliders[i]! as BoxCollider;
+//	// todo: calculate x offset
+//	const { y } = d.transform.position;
+
+//	colliders.forEach(c => {
+//		const rb = d.getComponent(Rigidbody)!;
+//		const cy = c.transform.position.y;
+//		const t = c as BoxCollider;
+//		if (cy > y) {
+//			const offsetY = d.top - t.bottom;
+//			d.transform.position.y -= offsetY;
+//		} else {
+//			const offsetY = t.top - d.bottom;
+//			d.transform.position.y += (offsetY - 0.005); // todo: make this offset configurable
+//		}
+
+//		if (rb.velocity.y < 0) {
+//			rb.velocity.y = 0;
+//		}
+//		d.gameObject.onCollision(c);
+//	});
+
+//	// todo: add onCollisionLeave
+//});

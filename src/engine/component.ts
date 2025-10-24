@@ -1,5 +1,5 @@
 import type { GameObject } from "./game-object";
-import type { Collider } from "./physics";
+import type { BoxCollider } from "./physics";
 import type { Transform } from "./transform";
 
 export abstract class Component {
@@ -19,7 +19,8 @@ export abstract class Component {
 	public onStart() { }
 	public onUpdate() { }
 
-	public onCollision(_col: Collider) {}
+	public onCollision(_col: BoxCollider) {}
+	public onCollisionLeave(_col: BoxCollider) {}
 	
 	public onDestroy(): void {}
 }

@@ -1,19 +1,19 @@
 export class Vec2 {
-	public static readonly distance = (a: Vec2, b: Vec2) => {
+	public static readonly distance = (a: Readonly<Vec2>, b: Readonly<Vec2>) => {
 		const x = a.x - b.x;
 		const y = a.y - b.y;
 		return Math.sqrt((x ** 2) + (y ** 2));
 	}
 
-	public static readonly scale = (v: Vec2, s: number): Vec2 => {
+	public static readonly scale = (v: Readonly<Vec2>, s: number): Vec2 => {
 		return new Vec2(v.x * s, v.y * s);
 	}
 
-	public static readonly add = (a: Vec2, b: Vec2): Vec2 => {
+	public static readonly add = (a: Readonly<Vec2>, b: Readonly<Vec2>): Vec2 => {
 		return new Vec2(a.x + b.x, a.y + b.y);
 	}
 
-	public static readonly sub = (a: Vec2, b: Vec2): Vec2 => {
+	public static readonly sub = (a: Readonly<Vec2>, b: Readonly<Vec2>): Vec2 => {
 		return new Vec2(a.x - b.x, a.y - b.y);
 	}
 

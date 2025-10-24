@@ -1,19 +1,33 @@
 import { Engine } from "./engine/engine";
-import { playMusic } from "./game/music-player";
 import { StartMenu } from "./game/scenes/game-menu";
 
 const start = async () => {
-	window.removeEventListener("keypress", start);
+	const startText = document.querySelector("div")!;
 	
-	startBtn.onclick = null;
-	startBtn.remove();
+	startText.onclick = null;
+	
+	window.removeEventListener("click", start);
+	window.removeEventListener("keypress", start);
 
-	const game = new Engine();
-	await game.start(StartMenu);
-	playMusic();
+	const engine = new Engine();
+
+	let count = 0;
+	const interval = setInterval(() => {
+		const points = new Array((count++ % 4)).fill(".").join("");
+		startText.innerText = `Loading${points}`;
+	}, 350);
+
+	startText.innerText = `Loading`;
+
+	await new Promise<void>(res => setInterval(() => {
+		res()
+	}, 1));
+
+	await engine.start(StartMenu);
+
+	clearInterval(interval);
+	startText.remove();
 }
 
-const startBtn = document.querySelector("div")!;
-
-startBtn.onclick = start;
+window.addEventListener("click", start);
 window.addEventListener("keypress", start);

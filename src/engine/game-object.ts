@@ -1,8 +1,11 @@
 import type { Component, ComponentProps, ComponentType } from "./component";
+import type { BoxCollider } from "./physics";
 import { SceneManager } from "./scene-manager";
 import { Transform } from "./transform";
 
 export class GameObject {
+	public tag: string = "Default";
+
 	public readonly transform: Transform = new Transform(this);
 
 	public components: Component[] = [];
@@ -25,5 +28,12 @@ export class GameObject {
 
 	public readonly destroy = () => {
 		SceneManager.activeScene.removeGameObject(this);
+	}
+
+	public onCollision(col: BoxCollider) {
+		this.components.forEach(c => c.onCollision(col));
+	}
+	public onCollisionLeave(col: BoxCollider) {
+		this.components.forEach(c => c.onCollisionLeave(col));
 	}
 }

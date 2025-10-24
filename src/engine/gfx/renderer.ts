@@ -133,6 +133,12 @@ export class Renderer {
 
 		const allLights = scene.getComponents(Light);
 
+		allLights.forEach(l => {
+			if (l.transform.isDirty) {
+				l.updateDirty(gl);
+			}
+		});
+
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -141,8 +147,13 @@ export class Renderer {
 				return;
 
 			const sprites = Array.from(l.components).filter(s => s instanceof SpriteRenderer);
+			sprites.forEach(s => {
+				if (s.transform.isDirty) {
+					s.updateDirty(gl);
+				}
+			})
 			const lights = allLights.filter(s => s.targetLayers === "all" || s.targetLayers.includes(l));
-			
+
 			sp.render(this, camera, sprites);
 			lp.render(this, camera, lights);
 
@@ -158,7 +169,12 @@ export class Renderer {
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		material.use(gl, camera, this.size);
-		scene.getComponents(UI).forEach(ui => ui.render(this, material));
+		scene.getComponents(UI).forEach(ui => {
+			if (ui.transform.isDirty) {
+				ui.updateDirty(gl);
+			}
+			ui.render(this, material);
+		});
 	}
 
 	public createArrayBuffer(data: number[]) {

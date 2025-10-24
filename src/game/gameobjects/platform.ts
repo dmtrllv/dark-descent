@@ -1,4 +1,4 @@
-import { GameObject, LineCollider, RegistryItem, ShadowCaster, Sprite, SpriteRenderer, Vec2 } from "../../engine";
+import { BoxCollider, GameObject, RegistryItem, ShadowCaster, Sprite, SpriteRenderer, Vec2 } from "../../engine";
 import { layers } from "../layers";
 import { platform } from "../sprites";
 
@@ -9,6 +9,7 @@ export class Platform extends GameObject {
 
 	public constructor(sprite: RegistryItem<Sprite>, position: Vec2 = new Vec2()) {
 		super();
+		this.tag = "Platform";
 		this.transform.position = position;
 		this.addComponent(SpriteRenderer, {
 			sprite: sprite.get(),
@@ -17,9 +18,8 @@ export class Platform extends GameObject {
 
 		this.addComponent(ShadowCaster, {});
 
-		this.addComponent(LineCollider, {
-			start: new Vec2(-1.5, 0),
-			end: new Vec2(1.5, 0),
+		this.addComponent(BoxCollider, {
+			size: new Vec2(2, 1)
 		});
 	}
 }

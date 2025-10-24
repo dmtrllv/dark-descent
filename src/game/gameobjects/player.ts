@@ -1,13 +1,13 @@
 import type { Socket } from "socket.io-client";
-import { Component, GameObject, Light, SpriteRenderer, Vec2, AudioListener, BoxCollider, Collider, Rigidbody, Camera, Animator } from "../../engine";
-import { Input } from "../../engine/input";
+import { Component, GameObject, Light, SpriteRenderer, Vec2, AudioListener, BoxCollider, Rigidbody, Camera, Animator } from "../../engine";
 import * as sprites from "../sprites";
-import { clamp } from "../../utils";
 import { SceneManager } from "../../engine/scene-manager";
 import { UI } from "../../engine/gfx/ui";
 import { layers } from "../layers";
 import { Layer } from "../../engine/gfx/layers";
 import { playerAnimation, playerWalkingAnimation } from "../animations";
+import { clamp } from "../../utils";
+import { Input } from "../../engine/input";
 
 export class NetworkPlayer extends GameObject {
 	public constructor(position: Vec2 = new Vec2) {
@@ -65,9 +65,8 @@ export class Player extends GameObject {
 		this.addComponent(Rigidbody);
 		this.addComponent(InputHandler, { socket });
 		this.addComponent(AudioListener);
-		this.addComponent(BoxCollider, {
-			size: new Vec2(0.02, 1)
-		});
+		this.addComponent(BoxCollider, {});
+		this.addComponent(MapBorder);
 	}
 
 	public destroy = () => {
@@ -79,7 +78,6 @@ export class Player extends GameObject {
 	}
 
 }
-
 
 class InputHandler extends Component {
 	public readonly rb: Rigidbody;
@@ -94,6 +92,7 @@ class InputHandler extends Component {
 	private _prevPosition: Vec2;
 	private _touchBtn: UiTouchBtn;
 	private _isWalking: boolean = false;
+	private _isGrounded: boolean = false;
 
 	public constructor(gameObject: GameObject) {
 		super(gameObject);
@@ -107,11 +106,16 @@ class InputHandler extends Component {
 		this._touchBtn = SceneManager.activeScene.spawn(camera.screenToWorld(new Vec2(0, 0))).addComponent(UiTouchBtn);
 	}
 
-	public onCollision(col: Collider): void {
-		const y = this.transform.position.y - 1;
-		const delta = (col.transform.position.y + col.top) - y;
-		this.transform.position.y += delta;
-		this.rb.velocity.y = 0;
+	public onCollision(col: BoxCollider): void {
+		if (col.gameObject.tag === "Platform") {
+			this._isGrounded = true;
+		}
+	}
+
+	public onCollisionLeave(col: BoxCollider): void {
+		if (col.gameObject.tag === "Platform") {
+			this._isGrounded = false;
+		}
 	}
 
 	public onUpdate(): void {
@@ -145,16 +149,9 @@ class InputHandler extends Component {
 			} else {
 				this.rb.velocity.x = 0;
 			}
-			if (Input.wentDown("space")) {
+			if (this._isGrounded && Input.isDown("space")) {
 				this.rb.velocity.y = 3;
 			}
-		}
-
-		if (this.transform.position.y < -3) {
-			this.rb.velocity.y = 0;
-			this.transform.position.y += 0.01;
-		} else {
-			this.transform.position.y = clamp(this.transform.position.y, -3, 10);
 		}
 
 		const isWalking = this.rb.velocity.x !== 0;
@@ -195,4 +192,16 @@ class UiTouchBtn extends Component {
 		this.btn.hidden = false;
 		this.thumb.hidden = false;
 	};
+}
+
+class MapBorder extends Component {
+	public readonly offset: Vec2 = new Vec2(0, 0);
+	public readonly size: Vec2 = new Vec2(13, 7);
+
+	public onUpdate(): void {
+		const { x, y } = this.transform.position;
+		
+		this.transform.position.x = clamp(x, this.offset.x - this.size.x, this.offset.x + this.size.x);
+		this.transform.position.y = clamp(y, this.offset.y - this.size.y, this.offset.y + this.size.y);
+	}
 }

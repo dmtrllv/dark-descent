@@ -23,13 +23,13 @@ export class Light extends Component {
 		}
 	}
 
+	public readonly updateDirty = (gl: GL) => {
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, this.transform.position.farray, gl.DYNAMIC_DRAW);
+	}
+
 	public readonly render = (renderer: Renderer, material: Material) => {
 		const gl = renderer.gl;
-
-		this.transform.resolveDirty(() => {
-			gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, this.transform.position.farray, gl.DYNAMIC_DRAW);
-		});
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, renderer.vertexBuffer);
 		gl.vertexAttribPointer(material.attributes.position, 2, gl.FLOAT, false, 0, 0);

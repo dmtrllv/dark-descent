@@ -15,6 +15,8 @@ export class Engine {
 	private _isActive = true;
 
 	public constructor() {
+		console.log("Engine starting...");
+		
 		window.addEventListener("blur", this.onInactive);
 		window.addEventListener("focus", this.onActive);
 	}
@@ -60,6 +62,7 @@ export class Engine {
 			AudioManager.tick(scene);
 			Renderer.render(scene);
 			Input.tick();
+			scene.resetDirty();
 		}
 
 		this._animationFrame = requestAnimationFrame(this.tick.bind(this));

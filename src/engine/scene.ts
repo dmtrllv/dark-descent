@@ -106,4 +106,8 @@ export abstract class Scene {
 	public update() {
 		this.gameObjects.forEach(g => g.components.forEach(c => c.onUpdate()));
 	}
+
+	public resetDirty() {
+		this.gameObjects.forEach(g => g.transform.resetDirty());
+	}
 }

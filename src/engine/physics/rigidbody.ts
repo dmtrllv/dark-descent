@@ -6,8 +6,8 @@ export class Rigidbody extends Component {
 	public gravity = new Vec2(0, -12);
 	public velocity = new Vec2(0, 0);
 
-	public onFixedUpdate(): void {
-		this.transform.position.add(Vec2.scale(this.velocity, Time.fixedDelta * 3));
-		this.velocity.add(Vec2.scale(this.gravity, Time.fixedDelta));
+	public onUpdate(): void {
+		this.transform.position.add(Vec2.scale(this.velocity, Time.delta * 3));
+		this.velocity.add(Vec2.scale(this.gravity, Time.delta));
 	}
 }
