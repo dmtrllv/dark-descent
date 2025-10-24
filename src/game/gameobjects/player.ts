@@ -1,5 +1,5 @@
 import type { Socket } from "socket.io-client";
-import { Component, GameObject, Light, SpriteRenderer, Vec2, AudioListener, BoxCollider, Collider, Rigidbody, Camera } from "../../engine";
+import { Component, GameObject, Light, SpriteRenderer, Vec2, AudioListener, BoxCollider, Collider, Rigidbody, Camera, Animator } from "../../engine";
 import { Input } from "../../engine/input";
 import * as sprites from "../sprites";
 import { clamp } from "../../utils";
@@ -7,6 +7,8 @@ import { SceneManager } from "../../engine/scene-manager";
 import { UI } from "../../engine/gfx/ui";
 import { layers } from "../layers";
 import { Layer } from "../../engine/gfx/layers";
+import { playerAnimation, playerWalkingAnimation } from "../animations";
+import { playerWalking } from "../sprites/character";
 
 export class NetworkPlayer extends GameObject {
 	public constructor(position: Vec2 = new Vec2) {
@@ -39,6 +41,11 @@ export class Player extends GameObject {
 			]
 		});
 
+		this.addComponent(Animator, {
+			animation: playerAnimation.get(),
+			offset: Math.random() * 1000,
+		});
+
 		this.addComponent(SpriteRenderer, {
 			sprite: sprites.player.get(),
 			layer: layers.map.get(),
@@ -66,11 +73,14 @@ export class Player extends GameObject {
 class InputHandler extends Component {
 	public readonly rb: Rigidbody;
 	public readonly renderer: SpriteRenderer;
-	public readonly speed: number = 0.7;
-	public readonly touchStartOffset: number = 25;
+	public readonly animator: Animator;
+
+	public speed: number = 0.46;
+	public socket: Socket | null = null;
+	
+	private readonly touchStartOffset: number = 25;
 
 	private _prevPosition: Vec2;
-	public socket: Socket | null = null;
 	private touchBtn: UiTouchBtn;
 
 	public constructor(gameObject: GameObject) {
@@ -78,6 +88,7 @@ class InputHandler extends Component {
 		this._prevPosition = this.transform.position.clone();
 		this.rb = this.getComponent(Rigidbody)!;
 		this.renderer = this.getComponent(SpriteRenderer)!;
+		this.animator = this.getComponent(Animator)!;
 
 		const camera = SceneManager.activeScene.getComponents(Camera)[0]!;
 
@@ -138,6 +149,12 @@ class InputHandler extends Component {
 			this._prevPosition = this.transform.position.clone();
 			const { x, y } = this.transform.position;
 			this.socket.emit("player-update", { x, y });
+		}
+
+		if(this.rb.velocity.x !== 0) {
+			this.animator.animation = playerWalkingAnimation.get();
+		} else {
+			this.animator.animation = playerAnimation.get();
 		}
 	}
 }

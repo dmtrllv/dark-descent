@@ -12,6 +12,7 @@ import { Shader } from "./shader";
 import { Sprite } from "./sprite";
 import { SpriteRenderPass } from "./sprite-render-pass";
 import { SpriteRenderer } from "./sprite-renderer";
+import { SpriteSheet } from "./sprite-sheet";
 import { UI } from "./ui";
 
 export class Renderer {
@@ -84,6 +85,7 @@ export class Renderer {
 		await Shader.registry.load(this);
 		await Material.registry.load(this);
 		await Sprite.registry.load(this);
+		await SpriteSheet.registry.load(this);
 		await Layer.registry.load();
 		await this.passRegistry.load();
 	}

@@ -13,11 +13,11 @@ export class Sprite {
 		image.src = path;
 	});
 
-	public readonly img: HTMLImageElement;
+	//public readonly img: HTMLImageElement | ImageData;
 	public readonly texture: WebGLTexture;
 	public readonly size: [number, number];
 
-	private constructor(renderer: Renderer, img: HTMLImageElement) {
+	public constructor(renderer: Renderer, img: HTMLImageElement | ImageData) {
 		const gl = renderer.gl;
 
 		const texture = gl.createTexture();
@@ -29,7 +29,7 @@ export class Sprite {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-		this.img = img;
+		//this.img = img;
 		this.texture = texture;
 		this.size = [img.width, img.height];
 	}
