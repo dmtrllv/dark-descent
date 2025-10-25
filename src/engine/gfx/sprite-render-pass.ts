@@ -1,23 +1,34 @@
+import type { Vec2 } from "../vec";
 import type { Camera } from "./camera";
 import { Material } from "./material";
-import { RenderPass } from "./render-pass";
+import { RenderTarget } from "./render-target";
 import type { Renderer } from "./renderer";
 import type { SpriteRenderer } from "./sprite-renderer";
 
-export class SpriteRenderPass extends RenderPass<SpriteRenderer> {
-	private readonly material = Material.unlitSprite.get();
+export class SpriteRenderPass {
+	public readonly renderTarget: RenderTarget;
+
+	public constructor(renderer: Renderer) {
+		this.renderTarget = new RenderTarget(renderer.gl, renderer.size);
+	}
+
+	public readonly resize = (gl: GL, size: Vec2) => {
+		this.renderTarget.resize(gl, size);
+	}
 
 	public render(renderer: Renderer, camera: Camera, sprites: SpriteRenderer[]) {
-		this.target.clear(renderer.gl);
+		this.renderTarget.clear(renderer.gl);
 
-		this.material.use(renderer.gl, camera, renderer.size)
+		const material = Material.unlitSprite.get();
 		
+		material.use(renderer.gl, camera, renderer.size)
+
 		const sorted = sprites.sort((a, b) => {
 			return a.zIndex - b.zIndex;
 		});
 
 		sorted.forEach((l) => {
-			l.render(renderer, this.material);
+			l.render(renderer, material);
 		});
 	}
 }

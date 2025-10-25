@@ -25,8 +25,8 @@ export class SpriteRenderer extends RenderComponent {
 		const gl = renderer.gl;
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, renderer.vertexBuffer);
-		gl.vertexAttribPointer(material.attributes.position, 2, gl.FLOAT, false, 0, 0);
-		gl.enableVertexAttribArray(material.attributes.position);
+		gl.vertexAttribPointer(material.attributes.vertex, 2, gl.FLOAT, false, 0, 0);
+		gl.enableVertexAttribArray(material.attributes.vertex);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, renderer.uvBuffer);
 		gl.vertexAttribPointer(material.attributes.uv, 2, gl.FLOAT, false, 0, 0);

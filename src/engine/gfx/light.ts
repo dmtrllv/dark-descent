@@ -24,6 +24,7 @@ export class Light extends Component {
 	}
 
 	public readonly updateDirty = (gl: GL) => {
+		// not used??
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, this.transform.position.farray, gl.DYNAMIC_DRAW);
 	}
@@ -38,6 +39,7 @@ export class Light extends Component {
 		gl.uniform2fv(material.uniforms.position, this.transform.position.farray);
 		gl.uniform4fv(material.uniforms.color, this.color.array);
 		gl.uniform1f(material.uniforms.intensity, this.intensity);
+		
 		//gl.uniform1f(material.uniforms.falloff, this.falloff);
 		gl.uniform1f(material.uniforms.radius, this.radius);
 

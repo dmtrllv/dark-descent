@@ -5,6 +5,7 @@ Global Fixes:
 Storage:
 	- log data
 	- save data
+	- settings
 	
 Audio:
 	- min/max volume -> clamp when set

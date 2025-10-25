@@ -12,3 +12,5 @@ export const split = <T>(arr: T[], left: (item: T) => boolean): [T[], T[]] => {
 
 	return splitted;
 }
+
+export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);

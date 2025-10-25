@@ -7,8 +7,8 @@ import { Layer } from "./layers";
 import { Light } from "./light";
 import { LightPass } from "./light-render-pass";
 import { Material } from "./material";
-import type { RenderPass } from "./render-pass";
 import { Shader } from "./shader";
+import { ShadowCaster } from "./shadow-caster";
 import { Sprite } from "./sprite";
 import { SpriteRenderPass } from "./sprite-render-pass";
 import { SpriteRenderer } from "./sprite-renderer";
@@ -27,14 +27,12 @@ export class Renderer {
 	public readonly uvBuffer: WebGLBuffer;
 	public readonly vertexBuffer: WebGLBuffer;
 
-	private readonly passRegistry = new Registry<RenderPass<any>>();
-
 	public get size(): Vec2 {
 		return new Vec2(this.canvas.width, this.canvas.height);
 	}
 
-	public readonly lightPass = this.passRegistry.register(() => new LightPass(this.gl, this.size));
-	public readonly spritePass = this.passRegistry.register(() => new SpriteRenderPass(this.gl, this.size));
+	public readonly lightPass: LightPass;
+	public readonly spritePass: SpriteRenderPass;
 
 	private constructor() {
 		this.canvas = document.createElement("canvas");
@@ -50,7 +48,6 @@ export class Renderer {
 		this.gl = gl;
 
 		document.body.appendChild(this.canvas);
-		this.onResize();
 		window.addEventListener("resize", this.onResize);
 
 		gl.clearColor(0, 0, 0, 0);
@@ -79,6 +76,11 @@ export class Renderer {
 			1.0, 1.0,
 			1.0, -1.0
 		]);
+
+		this.spritePass = new SpriteRenderPass(this);
+		this.lightPass = new LightPass(this.gl, this.size);
+
+		this.onResize();
 	}
 
 	public async load() {
@@ -87,7 +89,6 @@ export class Renderer {
 		await Sprite.registry.load(this);
 		await SpriteSheet.registry.load(this);
 		await Layer.registry.load();
-		await this.passRegistry.load();
 	}
 
 	private readonly onResize = () => {
@@ -102,11 +103,8 @@ export class Renderer {
 
 		const newSize = this.size;
 
-		if (this.passRegistry.isLoaded) {
-			this.passRegistry.forEach((item) => {
-				item.target.resize(this.gl, newSize);
-			});
-		}
+		this.spritePass.resize(this.gl, newSize);
+		this.lightPass.resize(this.gl, newSize);
 
 		if (SceneManager.hasActiveScene) {
 			this.render(SceneManager.activeScene);
@@ -128,10 +126,8 @@ export class Renderer {
 		const gl = this.gl;
 		const camera = cameras[0]!;
 
-		const lp = this.lightPass.get();
-		const sp = this.spritePass.get();
-
 		const allLights = scene.getComponents(Light);
+		const allCasters = scene.getComponents(ShadowCaster);
 
 		allLights.forEach(l => {
 			if (l.transform.isDirty) {
@@ -152,12 +148,14 @@ export class Renderer {
 					s.updateDirty(gl);
 				}
 			})
+
 			const lights = allLights.filter(s => s.targetLayers === "all" || s.targetLayers.includes(l));
+			const casters = allCasters.filter(s => s.targetLayers === "all" || s.targetLayers.includes(l));
+			
+			this.lightPass.render(this, camera, lights, casters);
+			this.spritePass.render(this, camera, sprites);
 
-			sp.render(this, camera, sprites);
-			lp.render(this, camera, lights);
-
-			l.render(this, camera, lp.target.targetTexture, sp.target.targetTexture);
+			l.render(this, camera, this.lightPass.renderTarget.targetTexture, this.spritePass.renderTarget.targetTexture);
 		});
 
 		this.renderUI(camera, scene);

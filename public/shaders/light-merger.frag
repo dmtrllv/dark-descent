@@ -12,6 +12,8 @@ out vec4 fragColor;
 void main() {
     vec4 light = texture(lightMap, textureCoord);
     vec4 t = texture(pixels, textureCoord);
-    //fragColor = vec4(t.rgb * light.rgb, 1);
     fragColor = vec4(t.rgb * light.rgb, t.a);
+
+    // lighting debugging
+    //fragColor = vec4(light.rgb, t.a);
 }

@@ -7,7 +7,7 @@
 	"scripts": {
 		"watch-client": "cross-env NODE_ENV=development vite build --watch --mode development",
 		"watch-server": "tsc -p tsconfig.server.json --watch",
-		"watch-dev": "nodemon --watch ./dist --exec \"node .\"",
+		"watch-dev": "nodemon --watch ./dist --exec \"node . --dev\"",
 		"watch": "concurrently npm:watch-*",
 		"build-client": "tsc && vite build",
 		"build-server": "tsc -p tsconfig.server.json",
