@@ -30,6 +30,14 @@ export class FirstScene extends Scene {
 			platforms: [
 				{
 					background: sprites.platform,
+					position: new Vec2(-6, -3.8)
+				},
+				{
+					background: sprites.platform,
+					position: new Vec2(-3, -4.8)
+				},
+				{
+					background: sprites.platform,
 					position: new Vec2(-3, -2.8)
 				},
 				{

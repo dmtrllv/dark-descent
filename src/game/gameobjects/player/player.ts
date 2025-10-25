@@ -38,9 +38,16 @@ export class Player extends GameObject {
 		this.addComponent(InputHandler, { socket });
 		this.addComponent(AudioListener);
 		this.addComponent(BoxCollider, {
-			size: new Vec2(0.8, 2)
+			size: new Vec2(0.8, 0.25),
+			offset: new Vec2(0, -0.825)
 		});
 		this.addComponent(MapBorder);
+
+		Object.assign(window, {
+			respawn: () => {
+				this.transform.position = new Vec2();
+			}
+		})
 	}
 
 	public destroy = () => {

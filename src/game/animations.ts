@@ -13,4 +13,4 @@ export const fireAnimation = Animation.registry.register(() => new Animation(100
 ]));
 
 export const playerAnimation = Animation.registry.register(() => new Animation(250, player.get().sprites));
-export const playerWalkingAnimation = Animation.registry.register(() => new Animation(180, playerWalking.get().sprites));
+export const playerWalkingAnimation = Animation.registry.register(() => new Animation(230, playerWalking.get().sprites));

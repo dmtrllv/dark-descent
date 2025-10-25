@@ -12,7 +12,7 @@ export class InputHandler extends Component {
 	public readonly animator: Animator;
 
 	public speed: number = 0.46;
-	public jumpForce: number = 2.5;
+	public jumpForce: number = 2.8;
 	public socket: Socket | null = null;
 
 	private readonly touchStartOffset: number = 25;

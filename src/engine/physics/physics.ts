@@ -61,8 +61,8 @@ export class Physics {
 					collisions[i].push(c);
 
 					const rb = d.getComponent(Rigidbody)!;
-					const cy = c.transform.position.y;
-					const y = d.transform.position.y;
+					const cy = c.center.y;
+					const y = d.center.y;
 					if (cy > y) {
 						const offsetY = d.top - c.bottom;
 						d.transform.position.y -= offsetY;

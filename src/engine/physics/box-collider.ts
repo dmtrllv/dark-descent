@@ -30,6 +30,10 @@ export class BoxCollider extends Component {
 	public get top(): number { return this._top; }
 	public get bottom(): number { return this._bottom; }
 
+	public get center() {
+		return Vec2.add(this.transform.position, this.offset);
+	}
+
 	public onStart(): void {
 		this.recalc();
 	}
@@ -42,7 +46,7 @@ export class BoxCollider extends Component {
 
 	private recalc() {
 		this._isDirty = false;
-		const { x, y } = Vec2.add(this.transform.position, this.offset);
+		const { x, y } = this.center;
 		this._left = x - this.size.x / 2;
 		this._right = x + this.size.x / 2;
 		this._top = y + this.size.y / 2;
