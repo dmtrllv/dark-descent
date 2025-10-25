@@ -30,27 +30,6 @@ export class ShadowCaster extends Component {
 	}
 
 	public readonly render = (renderer: Renderer, material: Material, light: Light) => {
-		const p = this.points;
-		const gl = renderer.gl;
-		const sr = this.getComponent(SpriteRenderer)!;
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, renderer.vertexBuffer);
-		gl.vertexAttribPointer(material.attributes.vertex, 2, gl.FLOAT, false, 0, 0);
-		gl.enableVertexAttribArray(material.attributes.vertex);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, renderer.uvBuffer);
-		gl.vertexAttribPointer(material.attributes.uv, 2, gl.FLOAT, false, 0, 0);
-		gl.enableVertexAttribArray(material.attributes.uv);
-
-		gl.uniform2fv(material.uniforms.position, this.transform.position.farray);
-		gl.uniform1i(material.uniforms.flip, +sr.flip);
-
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, sr.sprite!.texture);
-		gl.uniform1i(material.uniforms.sampler, 0);
-
-		gl.uniform2fv(material.uniforms.spriteSize, sr.sprite!.size);
-
-		gl.drawArrays(gl.TRIANGLES, 0, 6);
+		
 	}
 }
